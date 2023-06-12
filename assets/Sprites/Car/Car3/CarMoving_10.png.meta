@@ -1,0 +1,134 @@
+{
+  "ver": "1.0.25",
+  "importer": "image",
+  "imported": true,
+  "uuid": "e80c1195-1869-45ec-93af-706e7fb61fe8",
+  "files": [
+    ".json",
+    ".png"
+  ],
+  "subMetas": {
+    "6c48a": {
+      "importer": "texture",
+      "uuid": "e80c1195-1869-45ec-93af-706e7fb61fe8@6c48a",
+      "displayName": "CarMoving_10",
+      "id": "6c48a",
+      "name": "texture",
+      "userData": {
+        "wrapModeS": "clamp-to-edge",
+        "wrapModeT": "clamp-to-edge",
+        "imageUuidOrDatabaseUri": "e80c1195-1869-45ec-93af-706e7fb61fe8",
+        "isUuid": true,
+        "visible": false,
+        "minfilter": "linear",
+        "magfilter": "linear",
+        "mipfilter": "none",
+        "anisotropy": 0
+      },
+      "ver": "1.0.22",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "f9941": {
+      "importer": "sprite-frame",
+      "uuid": "e80c1195-1869-45ec-93af-706e7fb61fe8@f9941",
+      "displayName": "CarMoving_10",
+      "id": "f9941",
+      "name": "spriteFrame",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 5.5,
+        "trimX": 5,
+        "trimY": 0,
+        "width": 428,
+        "height": 369,
+        "rawWidth": 438,
+        "rawHeight": 380,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [
+            -214,
+            -184.5,
+            0,
+            214,
+            -184.5,
+            0,
+            -214,
+            184.5,
+            0,
+            214,
+            184.5,
+            0
+          ],
+          "indexes": [
+            0,
+            1,
+            2,
+            2,
+            1,
+            3
+          ],
+          "uv": [
+            5,
+            380,
+            433,
+            380,
+            5,
+            11,
+            433,
+            11
+          ],
+          "nuv": [
+            0.01141552511415525,
+            0.02894736842105263,
+            0.9885844748858448,
+            0.02894736842105263,
+            0.01141552511415525,
+            1,
+            0.9885844748858448,
+            1
+          ],
+          "minPos": [
+            -214,
+            -184.5,
+            0
+          ],
+          "maxPos": [
+            214,
+            184.5,
+            0
+          ]
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "e80c1195-1869-45ec-93af-706e7fb61fe8@6c48a",
+        "atlasUuid": ""
+      },
+      "ver": "1.0.11",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "type": "sprite-frame",
+    "fixAlphaTransparencyArtifacts": true,
+    "hasAlpha": true,
+    "redirect": "e80c1195-1869-45ec-93af-706e7fb61fe8@f9941"
+  }
+}
