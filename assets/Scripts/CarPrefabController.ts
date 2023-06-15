@@ -7,11 +7,7 @@ enum CarsDirection {
 
 @ccclass('CarPrefabController')
 export class CarPrefabController extends Component {
-    // @property({type: [SpriteFrame]})
-    // private cars: SpriteFrame[]=[];
-    // @property({type: Sprite})
-    // private car: Sprite;
-    private carsSpeed: number = math.randomRangeInt(100,200);
+    private carsSpeed: number = 200;
     private curDirection: CarsDirection = CarsDirection.Left;
     private directionChangeDelay: number = 20;
     private directionChangeTime: number = 0;
@@ -26,9 +22,7 @@ export class CarPrefabController extends Component {
     public Init(parent: Node): void {
         parent.addChild(this.node);
     }
-    // public abc(n:number):void{
-    //     this.car.spriteFrame=this.cars[n];
-    // }
+    
     protected moveCars(dt: number): void {
         const movement = new Vec3(0, 0, 0);
         if(this.curDirection == CarsDirection.Left) {
@@ -41,7 +35,7 @@ export class CarPrefabController extends Component {
             this.node.scale = new Vec3(Math.abs(this.node.scale.x), Math.abs(this.node.scale.y), 1);
         }
         this.node.position = this.node.position.add(movement);
-        this.node.getComponent(Collider2D);
+        this.node.getComponent(Collider2D).apply();
     }
 
     protected updateDirection(dt: number): void {

@@ -149,7 +149,7 @@
     "__prefab": {
       "__id__": 7
     },
-    "playOnLoad": false,
+    "playOnLoad": true,
     "_clips": [
       {
         "__uuid__": "bdfe7500-0e00-4c70-9186-ebcf76a6dd66",
@@ -181,7 +181,7 @@
     "_group": 1,
     "_density": 1,
     "_sensor": false,
-    "_friction": 0.2,
+    "_friction": 0,
     "_restitution": 0,
     "_offset": {
       "__type__": "cc.Vec2",

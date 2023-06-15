@@ -1,4 +1,4 @@
-import { _decorator, Component, misc, Node, Vec3 } from 'cc';
+import { _decorator, Component, misc, Node, Vec3, Animation, tween } from 'cc';
 import { FrogieController } from './FrogieController';
 const { ccclass, property } = _decorator;
 
@@ -7,8 +7,10 @@ export class CameraController extends Component {
     @property({type: FrogieController})
     private frogieController: FrogieController;
 
-    start() {
+    private anim: Animation | null = null;
 
+    protected start(): void {
+        this.anim = this.node.getComponent(Animation)
     }
 
     update(deltaTime: number) {
@@ -19,6 +21,21 @@ export class CameraController extends Component {
         let curPos = this.node.getPosition();
         curPos.lerp(targerPos, 0.2);
         this.node.setPosition(curPos);
+    }
+
+    shakingCamera() {
+        const frogiePosition = this.frogieController.node.getPosition();
+        this.node.setPosition(frogiePosition);
+
+        const leftDirection = new Vec3(frogiePosition.x-50,frogiePosition.y, 0);
+        const rightDirection = new Vec3(frogiePosition.x+50,frogiePosition.y, 0);
+
+        tween(this.node)
+        .to(0.05, {position: leftDirection})
+        .to(0.05, {position: rightDirection})
+        .to(0.05, {position: leftDirection})
+        .to(0.05, {position: rightDirection})
+        .start();
     }
 }
 

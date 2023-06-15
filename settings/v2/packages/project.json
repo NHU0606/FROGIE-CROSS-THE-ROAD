@@ -1,0 +1,8 @@
+{
+  "__version__": "1.0.4",
+  "custom_joint_texture_layouts": [],
+  "physics": {
+    "autoSimulation": true,
+    "allowSleep": true
+  }
+}
