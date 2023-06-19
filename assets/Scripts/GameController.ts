@@ -30,8 +30,9 @@ import {
   Animation,
   AnimationClip,
   NodePool,
+  EventKeyboard,
 } from "cc";
-import { Data } from "./DataType";
+import { Data, step } from "./DataType";
 
 const { ccclass, property } = _decorator;
 
@@ -83,51 +84,47 @@ export class GameController extends Component {
 
   private poolTree: NodePool;
 
+  @property({ type: Node })
+  private backgroundNode: Node;
+
+  @property({ type: Node })
+  private treeNode: Node;
+
   protected onLoad(): void {
     director.resume();
 
     const audioSrc = this.node.getComponent(AudioSource);
     this.gameModel.AudioBackground = audioSrc;
 
-    // for (let i = 0; i < 5; i++) {
-    //   let element = new Node('tree');
-    //   this.poolTree.put(element);
-    // }
+    this.treeNode.setPosition(new Vec3(0, 0, 0));
 
-     
+    const data = Data[0];
+
+    this.frogieController.getComponent(FrogieController).loadPos(data.pos);
+
+    for (let i = 0; i < data.pos.length; i++) {
+      let tree = instantiate(this.treeNode);
+
+      this.backgroundNode.addChild(tree);
+      tree.setPosition(
+        new Vec3(data.pos[i].x * step, data.pos[i].y * step + step  , 0)
+      );
+      tree.setScale(new Vec3(0.5, 0.5));
+    }
   }
 
-  // private getTree(){
-  //   let element;
-  //   if(this.poolTree.size()>0){
-  //      element = this.poolTree.get();
-  //   } else{
-  //     element = new Node();
-  //   }
- 
-
-  //   this.poolTree.put(element);
-  // }
-
-  // private loadData() {
-  //   const dateLevel = Data[this.level];
-  //   /**
-  //    *  Tao cay
-  //    * Set pos cho cay
-  //    */
-  //   for (let i = 0; i <= dateLevel.pos.length; i++) {}
-  //   this.node.setPosition(dateLevel.pos[0].x, dateLevel.pos[0].y, 0);
-  // }
-
   protected spawnCar(): void {
-    if(this.gameModel.CarsNode.children.length < 5) {
-      
+    if (this.gameModel.CarsNode.children.length < 5) {
       const randomCarIndex = randomRangeInt(0, this.listSpriteFrame.length);
-      const carsNode = instantiate(this.prefabCar).getComponent(CarPrefabController);
-      carsNode.getComponent(Sprite).spriteFrame = this.listSpriteFrame[randomCarIndex];
-      carsNode.getComponent(Animation).defaultClip = this.listAnimationCars[randomCarIndex];
+      const carsNode = instantiate(this.prefabCar).getComponent(
+        CarPrefabController
+      );
+      carsNode.getComponent(Sprite).spriteFrame =
+        this.listSpriteFrame[randomCarIndex];
+      carsNode.getComponent(Animation).defaultClip =
+        this.listAnimationCars[randomCarIndex];
       carsNode.Init(this.gameModel.CarsNode);
-      
+
       carsNode.getComponent(Animation).play();
       carsNode.getComponent(Collider2D).apply();
     }
@@ -190,8 +187,7 @@ export class GameController extends Component {
 
     if (frogieCollider) {
       frogieCollider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
-      // frogieCollider.on(Contact2DType.END_CONTACT, this.onEndContact, this);
-      frogieCollider.node.position = new Vec3(0, -260, 0);
+      frogieCollider.node.position = new Vec3(0, -200, 0);
       frogieCollider.apply();
     }
   }
@@ -203,7 +199,7 @@ export class GameController extends Component {
   ): void {
     // GAME OVER
 
-    if (otherCollider.node.name.startsWith('Car')) {
+    if (otherCollider.node.name.startsWith("Car")) {
       this.frogieController.frogieCrash();
       this.cameraController.shakingCamera();
       this.gameModel.AudioAccident.play();
@@ -215,39 +211,15 @@ export class GameController extends Component {
       this.resultController.showResult();
     }
 
-    // COLLISION WITH OBSTACLES
-
-    if (
-      otherCollider.node.name.startsWith('Thing') ||
-      otherCollider.node.name.startsWith('Collider')
-    ) {
-      // this.frogieController.speed = 0;
-    }
-
-
     // COLLISION WITH FINISHLINE
-    if (otherCollider.node.name === 'FinishLine') {
+
+    if (otherCollider.node.name === "FinishLine") {
       this.FinishController.showFinish();
       this.schedule(function () {
         director.pause();
       }, 2);
-
     }
   }
-
-  // protected onEndContact(
-  //   selfCollider: Collider2D,
-  //   otherCollider: Collider2D,
-  //   contact: IPhysics2DContact | null
-  // ): void {
-  //   if (
-  //     otherCollider.node.name.startsWith("Thing") ||
-  //     otherCollider.node.name.startsWith("Collider")
-  //   ) {
-  //     this.frogieController.speed = 80;
-  //     console.log('2');
-  //   }
-  // }
 
   protected onAudio(): void {
     this.variableVolume = 1;

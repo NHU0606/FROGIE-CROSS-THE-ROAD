@@ -15,7 +15,7 @@ export class CarPrefabController extends Component {
     protected start(): void {
         const carCollider = this.node.getComponent(Collider2D);
         if (carCollider) {
-            carCollider.node.position = new Vec3(-1150,math.randomRangeInt(150, 300),0);
+            carCollider.node.position = new Vec3(-1150,math.randomRangeInt(450, 550),0);
             carCollider.apply();
         }
     }

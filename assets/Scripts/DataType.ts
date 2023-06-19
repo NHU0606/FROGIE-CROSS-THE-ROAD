@@ -2,8 +2,13 @@ import { Vec2 } from "cc";
 
 export const Data = [
   {
-    number: 1,
-    pos: [{ x: 200, y: 200 }, { x: 200, y: 200 }],
+    id: 1,
+    pos: [
+      { x: -15, y: 3 },
+      { x: 12, y: 6 },
+      { x: 8, y: -5 },
+      { x: 5, y: 15 },
+    ],
   },
   {
     number: 1,
@@ -14,3 +19,5 @@ export const Data = [
     pos: [{ x: 200, y: 200 }],
   },
 ];
+
+export const step = 50;

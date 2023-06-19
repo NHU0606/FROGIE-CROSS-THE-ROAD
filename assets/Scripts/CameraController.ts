@@ -15,7 +15,7 @@ export class CameraController extends Component {
 
     update(deltaTime: number) {
         let targerPos = this.frogieController.node.getPosition();
-        targerPos.y = misc.clampf(targerPos.y, 0, 550);
+        targerPos.y = misc.clampf(targerPos.y, 0, 1100);
         targerPos.x = misc.clampf(targerPos.x, -500, 500);
 
         let curPos = this.node.getPosition();
