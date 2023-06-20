@@ -4,5 +4,11 @@
   "physics": {
     "autoSimulation": true,
     "allowSleep": true
-  }
+  },
+  "layer": [
+    {
+      "name": "mm",
+      "value": 524288
+    }
+  ]
 }

@@ -22,6 +22,8 @@ export class FrogieController extends Component {
   speed: number = step;
 
   private posTree: Array<{ x: number; y: number }>;
+  private posBush: Array<{ x: number; y:  number}>;
+  private posFence: Array<{ x: number; y:  number}>;
 
   private check = {
     left: true,
@@ -40,11 +42,7 @@ export class FrogieController extends Component {
   protected onLoad(): void {
     input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
 
-    this.node.setPosition(
-      new Vec3(this.pos.x * this.speed, this.pos.y * this.speed, 0)
-    );
-
-    console.log(this.node.position);
+    this.node.setPosition(new Vec3(this.pos.x * this.speed, this.pos.y * this.speed, 0));
   }
 
   protected onKeyDown(event: EventKeyboard): void {
@@ -67,8 +65,6 @@ export class FrogieController extends Component {
           .to(0, { scale: new Vec3(1, 1, 1) })
           .to(0.48, { position: leftDirection })
           .start();
-    
-
         this.setCheck();
         break;
       case KeyCode.ARROW_RIGHT:
@@ -84,7 +80,6 @@ export class FrogieController extends Component {
           .to(0, { scale: new Vec3(-1, 1, 1) })
           .to(0.48, { position: rightDirection })
           .start();
-
         this.setCheck();
         break;
       case KeyCode.ARROW_UP:
@@ -97,7 +92,6 @@ export class FrogieController extends Component {
         );
         this.anim.play("Move");
         tween(this.node).to(0.48, { position: upDirection }).start();
-
         this.setCheck();
         break;
       case KeyCode.ARROW_DOWN:
@@ -110,7 +104,6 @@ export class FrogieController extends Component {
         );
         this.anim.play("Move");
         tween(this.node).to(0.48, { position: downDirection }).start();
-
         this.setCheck();
         break;
     }
@@ -120,7 +113,7 @@ export class FrogieController extends Component {
     this.anim.play("Crash");
     this.schedule(function () {
       this.node.active = false;
-    }, 0.25);
+    }, 0.2);
   }
 
   public loadPos(_pos: Array<{ x: number; y: number }>): void {
@@ -129,39 +122,31 @@ export class FrogieController extends Component {
 
   public setCheck(): void {
     let temp = { x: this.pos.x - 1, y: this.pos.y };
-    if (
-      !this.posTree.find(
-        (item) => JSON.stringify(item) === JSON.stringify(temp)
-      )
-    )
+    if (!this.posTree.find((item) => JSON.stringify(item) === JSON.stringify(temp))
+    ) {
       this.check.left = true;
+    }
     else this.check.left = false;
 
     temp = { x: this.pos.x + 1, y: this.pos.y };
-    if (
-      !this.posTree.find(
-        (item) => JSON.stringify(item) === JSON.stringify(temp)
-      )
-    )
+    if (!this.posTree.find((item) => JSON.stringify(item) === JSON.stringify(temp))
+    ) {
       this.check.right = true;
+    }
     else this.check.right = false;
 
     temp = { x: this.pos.x, y: this.pos.y + 1 };
-    if (
-      !this.posTree.find(
-        (item) => JSON.stringify(item) === JSON.stringify(temp)
-      )
-    )
+    if (!this.posTree.find((item) => JSON.stringify(item) === JSON.stringify(temp))
+    ) {
       this.check.up = true;
+    }
     else this.check.up = false;
 
     temp = { x: this.pos.x, y: this.pos.y - 1 };
-    if (
-      !this.posTree.find(
-        (item) => JSON.stringify(item) === JSON.stringify(temp)
-      )
-    )
+    if (!this.posTree.find((item) => JSON.stringify(item) === JSON.stringify(temp))
+    ) {
       this.check.down = true;
+    }
     else this.check.down = false;
   }
 }

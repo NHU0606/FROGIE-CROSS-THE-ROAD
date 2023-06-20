@@ -82,13 +82,30 @@ export class GameController extends Component {
 
   private level: number = 0;
 
-  private poolTree: NodePool;
-
   @property({ type: Node })
   private backgroundNode: Node;
 
   @property({ type: Node })
   private treeNode: Node;
+
+  @property({ type: Node })
+  private bushNode: Node;
+
+  @property({ type: Node })
+  private fenceNode: Node;  
+  
+  @property({ type: Node })
+  private wallNode: Node;
+
+  @property({ type: Node })
+  private container: Node;
+
+  
+  @property({ type: Node })
+  private containerLeaf: Node;
+
+  @property({ type: Node })
+  private itemLeaf: Node;
 
   protected onLoad(): void {
     director.resume();
@@ -96,23 +113,67 @@ export class GameController extends Component {
     const audioSrc = this.node.getComponent(AudioSource);
     this.gameModel.AudioBackground = audioSrc;
 
-    this.treeNode.setPosition(new Vec3(0, 0, 0));
-
+    // LOAD DATA OF LEVEL 1
     const data = Data[0];
 
-    this.frogieController.getComponent(FrogieController).loadPos(data.pos);
+    // SETTING TREES
+    this.treeNode.setPosition(new Vec3(0, 0, 0));
+    this.frogieController
+      .getComponent(FrogieController)
+      .loadPos([].concat(data.posTrees, data.posBush, data.posFence, data.posWall));
 
-    for (let i = 0; i < data.pos.length; i++) {
+    for (let i = 0; i < data.posTrees.length; i++) {
       let tree = instantiate(this.treeNode);
+      let leaf = instantiate(this.itemLeaf);
 
-      this.backgroundNode.addChild(tree);
+      this.container.addChild(tree);
+      this.containerLeaf.addChild(leaf);
       tree.setPosition(
-        new Vec3(data.pos[i].x * step, data.pos[i].y * step + step  , 0)
+        new Vec3(data.posTrees[i].x * step, data.posTrees[i].y * step + step, 0)
       );
+
+      leaf.setPosition(new Vec3(data.posTrees[i].x * step, data.posTrees[i].y * step + 80,  0))
       tree.setScale(new Vec3(0.5, 0.5));
+    }
+
+    // SETTING WALL
+    this.wallNode.setPosition(new Vec3(0, 0, 0));
+    
+    for (let i = 0; i< data.posWall.length; i++) {
+      let wall = instantiate(this.wallNode);
+
+      this.container.addChild(wall);
+      wall.setPosition(new Vec3(data.posWall[i].x * step, data.posWall[i].y * step, 0));
+    }
+
+    // SETTING BUSH
+    this.bushNode.setPosition(new Vec3(0, 0, 0));
+
+    for (let i = 0; i < data.posBush.length; i++) {
+      let bush = instantiate(this.bushNode);
+
+      this.container.addChild(bush);
+      bush.setPosition(
+        new Vec3(data.posBush[i].x * step, data.posBush[i].y * step, 0)
+      );
+      bush.setScale(new Vec3(0.3, 0.2));
+    }
+
+    // SETTING FENCE
+    this.fenceNode.setPosition(new Vec3(0, 0, 0));
+
+    for (let i = 0; i < data.posFence.length; i += 7) {
+      let fence = instantiate(this.fenceNode);
+
+      this.container.addChild(fence);
+      fence.setPosition(
+        new Vec3(data.posFence[i].x * step, data.posFence[i].y * step, 0)
+      );
+      fence.setScale(new Vec3(1, 1));
     }
   }
 
+  // SETTING CARS
   protected spawnCar(): void {
     if (this.gameModel.CarsNode.children.length < 5) {
       const randomCarIndex = randomRangeInt(0, this.listSpriteFrame.length);
@@ -250,10 +311,14 @@ export class GameController extends Component {
   // ------LOAD SCENE------
 
   onClickBtnHome() {
-    director.loadScene("Entry");
+    director.loadScene("SelectLevel");
   }
 
   onClickBtnAgain() {
     director.loadScene("Play");
+  }
+
+  onClickBtnNext() {
+    // director.loadScene('')
   }
 }
