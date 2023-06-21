@@ -10,6 +10,21 @@ export class AudioController extends Component {
     private isIconShown: boolean = false;
     private isMuted: boolean = false;
 
+    @property(AudioSource)
+    public audioBackground: AudioSource = null;
+
+    @property(AudioSource)
+    private audioFall: AudioSource = null;
+
+    @property(AudioSource)
+    private audioAccident: AudioSource = null;
+
+    @property(AudioSource)
+    private audioBtn: AudioSource = null;
+
+    @property(AudioSource)
+    private audioCar: AudioSource = null;
+
     public get IsMuted() : boolean {
         return this.isMuted;
     }
@@ -53,9 +68,9 @@ export class AudioController extends Component {
     onClickIcon () {
         this.isMuted = !this.isMuted;
         if (this.isMuted) {
-            this.gameModel.AudioBackground.volume = 0;
+            this.audioBackground.volume = 0;
         } else {
-            this.gameModel.AudioBackground.volume = 1;
+            this.audioBackground.volume = 1;
         }               
     }  
 
@@ -70,10 +85,10 @@ export class AudioController extends Component {
     }
 
     playAudio() {
-        this.gameModel.AudioBackground.volume = 1;
+        this.audioBackground.volume = 1;
     }
 
     pauseAudio() {
-        this.gameModel.AudioBackground.volume = 0;
+        this.audioBackground.volume = 0;
     }    
 }

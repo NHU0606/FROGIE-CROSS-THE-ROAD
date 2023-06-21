@@ -99,7 +99,6 @@ export class GameController extends Component {
 
   @property({ type: Node })
   private container: Node;
-
   
   @property({ type: Node })
   private containerLeaf: Node;
@@ -137,9 +136,30 @@ export class GameController extends Component {
     }
 
     // SETTING WALL
+    // this.wallNode.setPosition(new Vec3(0, 0, 0));
+    
+    // for (let i = 0; i< data.posWall.length; i++) {
+    //   let wall = instantiate(this.wallNode);
+
+    //   this.container.addChild(wall);
+    //   wall.setPosition(new Vec3(data.posWall[i].x * step, data.posWall[i].y * step, 0));
+    // }
+
+    const coordinates: {x: number, y: number}[] = [];
+
     this.wallNode.setPosition(new Vec3(0, 0, 0));
     
     for (let i = 0; i< data.posWall.length; i++) {
+      for (let x = data.posWall[i].x ; x <= 30; x++){
+        coordinates.push({x: x, y: data.posWall[i].y})
+        console.log('x',data.posWall[i].x++)
+      }
+
+      for (let y = data.posWall[i].y ; y <= 30; y++){
+        coordinates.push({x: data.posWall[i].x, y: y})
+        console.log('y',data.posWall[i].y++)
+      }
+
       let wall = instantiate(this.wallNode);
 
       this.container.addChild(wall);
@@ -173,24 +193,6 @@ export class GameController extends Component {
     }
   }
 
-  // SETTING CARS
-  protected spawnCar(): void {
-    if (this.gameModel.CarsNode.children.length < 5) {
-      const randomCarIndex = randomRangeInt(0, this.listSpriteFrame.length);
-      const carsNode = instantiate(this.prefabCar).getComponent(
-        CarPrefabController
-      );
-      carsNode.getComponent(Sprite).spriteFrame =
-        this.listSpriteFrame[randomCarIndex];
-      carsNode.getComponent(Animation).defaultClip =
-        this.listAnimationCars[randomCarIndex];
-      carsNode.Init(this.gameModel.CarsNode);
-
-      carsNode.getComponent(Animation).play();
-      carsNode.getComponent(Collider2D).apply();
-    }
-  }
-
   protected onClickIconPause(): void {
     let opacityBtnOff = this.iconOff.getComponent(UIOpacity);
     let opacityBtnOn = this.iconShow.getComponent(UIOpacity);
@@ -201,11 +203,13 @@ export class GameController extends Component {
       // this.iconShow.interactable = false;
       // opacityBtnOff.opacity = 0;
       // opacityBtnOn.opacity = 0;
+      // this.audioController.node.active = false;
       director.pause();
     } else {
       director.resume();
       // this.iconOff.interactable = true;
       // this.iconShow.interactable = true;
+      // this.audioController.node.active = true;
       // opacityBtnOff.opacity = 255;
       // opacityBtnOn.opacity = 255;
     }
@@ -224,7 +228,7 @@ export class GameController extends Component {
       this.variableVolumeArray = JSON.parse(getVolumne);
       localStorage.setItem("volume", JSON.stringify(this.variableVolumeArray));
     } else {
-      this.audioController.playAudio();
+      this.onAudio();
       this.iconShow.node.active = true;
       this.iconOff.node.active = false;
     }
@@ -232,16 +236,18 @@ export class GameController extends Component {
     this.convertVolume =
       this.variableVolumeArray[this.variableVolumeArray.length - 1];
 
-    // if (this.convertVolume === 1) {
-    //   this.iconShow.node.active = true;
-    //   this.iconOff.node.active = false;
-    //   this.gameModel.AudioBackground.volume = 1;
-    // }
-    // else if (this.convertVolume === 0) {
-    //   this.iconShow.node.active = false;
-    //   this.iconOff.node.active = true;
-    //   this.gameModel.AudioBackground.volume = 0;
-    // }
+    if (this.convertVolume === 1) {
+      this.iconShow.node.active = true;
+      this.iconOff.node.active = false;
+      // this.gameModel.AudioBackground.volume = 1;
+      this.onAudio();
+    }
+    else if (this.convertVolume === 0) {
+      this.iconShow.node.active = false;
+      this.iconOff.node.active = true;
+      this.audioController.pauseAudio();
+      // this.gameModel.AudioBackground.volume = 0;
+    }
 
     this.frogieNode = this.frogieController.getComponent(FrogieController);
     const frogieCollider = this.frogieNode.getComponent(Collider2D);
@@ -286,26 +292,28 @@ export class GameController extends Component {
     this.variableVolume = 1;
     this.variableVolumeArray.push(this.variableVolume);
     sys.localStorage.setItem(
-      "volume",
+      'volume',
       JSON.stringify(this.variableVolumeArray)
     );
 
     this.iconShow.node.active = true;
     this.iconOff.node.active = false;
-    this.gameModel.AudioBackground.volume = 1;
+    this.audioController.playAudio();
+
   }
 
   protected offAudio(): void {
     this.variableVolume = 0;
     this.variableVolumeArray.push(this.variableVolume);
     sys.localStorage.setItem(
-      "volume",
+      'volume',
       JSON.stringify(this.variableVolumeArray)
     );
 
     this.iconShow.node.active = false;
     this.iconOff.node.active = true;
-    this.gameModel.AudioBackground.volume = 0;
+    this.audioController.pauseAudio();
+
   }
 
   // ------LOAD SCENE------
@@ -321,4 +329,29 @@ export class GameController extends Component {
   onClickBtnNext() {
     // director.loadScene('')
   }
+
+  // SETTING CARS
+  protected spawnCar(): void {
+    if (this.gameModel.CarsNode.children.length < 5) {
+      const randomCarIndex = randomRangeInt(0, this.listSpriteFrame.length);
+      const carsNode = instantiate(this.prefabCar).getComponent(
+        CarPrefabController
+      );
+      carsNode.getComponent(Sprite).spriteFrame =
+        this.listSpriteFrame[randomCarIndex];
+      carsNode.getComponent(Animation).defaultClip =
+        this.listAnimationCars[randomCarIndex];
+      carsNode.Init(this.gameModel.CarsNode);
+
+      carsNode.getComponent(Animation).play();
+      carsNode.getComponent(Collider2D).apply();
+    }
+  }
+
+  // PASS LEVEL
+  
+
+  // MAX LEVEL
+
+  
 }

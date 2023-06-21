@@ -21,9 +21,7 @@ export class FrogieController extends Component {
   anim: Animation | null = null;
   speed: number = step;
 
-  private posTree: Array<{ x: number; y: number }>;
-  private posBush: Array<{ x: number; y:  number}>;
-  private posFence: Array<{ x: number; y:  number}>;
+  private posObstacle: Array<{ x: number; y: number }>;
 
   private check = {
     left: true,
@@ -117,33 +115,33 @@ export class FrogieController extends Component {
   }
 
   public loadPos(_pos: Array<{ x: number; y: number }>): void {
-    this.posTree = _pos;
+    this.posObstacle = _pos;
   }
 
   public setCheck(): void {
     let temp = { x: this.pos.x - 1, y: this.pos.y };
-    if (!this.posTree.find((item) => JSON.stringify(item) === JSON.stringify(temp))
+    if (!this.posObstacle.find((item) => JSON.stringify(item) === JSON.stringify(temp))
     ) {
       this.check.left = true;
     }
     else this.check.left = false;
 
     temp = { x: this.pos.x + 1, y: this.pos.y };
-    if (!this.posTree.find((item) => JSON.stringify(item) === JSON.stringify(temp))
+    if (!this.posObstacle.find((item) => JSON.stringify(item) === JSON.stringify(temp))
     ) {
       this.check.right = true;
     }
     else this.check.right = false;
 
     temp = { x: this.pos.x, y: this.pos.y + 1 };
-    if (!this.posTree.find((item) => JSON.stringify(item) === JSON.stringify(temp))
+    if (!this.posObstacle.find((item) => JSON.stringify(item) === JSON.stringify(temp))
     ) {
       this.check.up = true;
     }
     else this.check.up = false;
 
     temp = { x: this.pos.x, y: this.pos.y - 1 };
-    if (!this.posTree.find((item) => JSON.stringify(item) === JSON.stringify(temp))
+    if (!this.posObstacle.find((item) => JSON.stringify(item) === JSON.stringify(temp))
     ) {
       this.check.down = true;
     }

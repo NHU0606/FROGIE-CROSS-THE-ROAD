@@ -6,8 +6,6 @@ export class GameModel extends Component {
     @property({type: Sprite})
     private frogie: Sprite = null;
 
-   
-
     @property({type: Node})
     private carsNode: Node;
 
