@@ -3,11 +3,27 @@ import { Vec2 } from "cc";
 export const Data = [
   {
     id: 1,
-    posWall: [
-      { x: -12, y: 5 },
-      { x: 0, y: -9 },
-      { x: 19, y: 10 },
-      { x: 0, y: 29 },
+    posWall: {
+      maxY : 29,
+      minY : -9,
+      maxX: 19,
+      minX: -19,
+    },
+    posFinishLine: [
+      { x: 0, y: 26 },
+      { x: 1, y: 26 },
+      { x: 2, y: 26 },
+      { x: -1, y: 26 },
+      { x: -2, y: 26 },
+    ],
+    posRoad: [
+      { x: 0, y: 10 },
+    ],
+    posFloor: [
+      { x: -10, y: 13 },
+      { x: 10, y: 13 },
+      { x: -10, y: 7 },
+      { x: 10, y: 7 },
     ],
     posTrees: [
       { x: -16, y: 22 },
@@ -52,8 +68,7 @@ export const Data = [
   },
   {
     id: 2,
-
-    posWall: [
+    posTrees: [
       { x: 0, y: -9 },
     ],
   },
@@ -65,3 +80,4 @@ export const Data = [
 ];
 
 export const step = 50;
+

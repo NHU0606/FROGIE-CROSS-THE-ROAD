@@ -1,11 +1,10 @@
 import { CarPrefabController } from "./CarPrefabController";
-import { FinishController } from "./FinishController";
 import { FrogieController } from "./FrogieController";
 import { GameModel } from "./GameModel";
 import { CameraController } from "./CameraController";
 import { PauseController } from "./PauseController";
 import { AudioController } from "./AudioController";
-import { ResultController } from "./ResultController";
+import { Data, step } from "./DataType";
 import {
   _decorator,
   Collider2D,
@@ -13,31 +12,24 @@ import {
   Contact2DType,
   Vec3,
   instantiate,
-  Node,
   randomRangeInt,
   IPhysics2DContact,
   math,
-  PhysicsSystem,
   sys,
-  Prefab,
   UIOpacity,
-  log,
   Button,
   AudioSource,
   director,
-  SpriteFrame,
   Sprite,
   Animation,
-  AnimationClip,
-  NodePool,
-  EventKeyboard,
 } from "cc";
-import { Data, step } from "./DataType";
 
 const { ccclass, property } = _decorator;
 
 @ccclass("GameController")
 export class GameController extends Component {
+  public static gameLevel = 0;
+
   @property({ type: GameModel })
   private gameModel: GameModel;
 
@@ -47,11 +39,6 @@ export class GameController extends Component {
   @property({ type: CameraController })
   private cameraController: CameraController;
 
-  @property({ type: FrogieController })
-  private frogieController: FrogieController;
-
-  private frogieNode: FrogieController;
-
   @property({ type: Button })
   private iconShow: Button = null;
 
@@ -59,74 +46,56 @@ export class GameController extends Component {
   private iconOff: Button = null;
 
   @property({ type: PauseController })
-  private pause: PauseController;
-
-  @property({ type: ResultController })
-  private resultController: ResultController;
-
-  @property({ type: FinishController })
-  private FinishController: FinishController;
-
-  @property({ type: SpriteFrame })
-  private listSpriteFrame: SpriteFrame[] = [];
-
-  @property({ type: Prefab })
-  private prefabCar: Prefab;
-
-  @property({ type: AnimationClip })
-  private listAnimationCars: AnimationClip[] = [];
+  private pause: PauseController; 
 
   private variableVolume: number;
   private variableVolumeArray: number[] = [];
   private convertVolume: number;
 
-  private level: number = 0;
-
-  @property({ type: Node })
-  private backgroundNode: Node;
-
-  @property({ type: Node })
-  private treeNode: Node;
-
-  @property({ type: Node })
-  private bushNode: Node;
-
-  @property({ type: Node })
-  private fenceNode: Node;  
-  
-  @property({ type: Node })
-  private wallNode: Node;
-
-  @property({ type: Node })
-  private container: Node;
-  
-  @property({ type: Node })
-  private containerLeaf: Node;
-
-  @property({ type: Node })
-  private itemLeaf: Node;
-
   protected onLoad(): void {
+    console.log(GameController.gameLevel)
     director.resume();
 
     const audioSrc = this.node.getComponent(AudioSource);
     this.gameModel.AudioBackground = audioSrc;
 
     // LOAD DATA OF LEVEL 1
-    const data = Data[0];
+    const data = Data[GameController.gameLevel];
+    console.log('data', data)
+
+    //SETTING FINISH LINE
+    for(let i = 0; i < data.posFinishLine.length; i += 5) {
+      var finishLine = instantiate(this.gameModel.FinishLine);
+      this.gameModel.ContainerObstacle.addChild(finishLine);
+      finishLine.setPosition(new Vec3(data.posFinishLine[i].x * step, data.posFinishLine[i].y * step, 0));
+    }
+
+    //SETTING ROAD
+    for(let i = 0; i < data.posRoad.length; i++) {
+      var road = instantiate(this.gameModel.Road);
+      this.gameModel.ContainerObstacle.addChild(road);
+      road.setPosition(new Vec3(data.posRoad[i].x * step, data.posRoad[i].y * step, 0));
+    }
+
+    //SETTING FLOOR
+    for(let i = 0; i < data.posFloor.length; i++) {
+      var floor = instantiate(this.gameModel.Floor);
+      this.gameModel.ContainerObstacle.addChild(floor);
+      floor.setPosition(new Vec3(data.posFloor[i].x * step, data.posFloor[i].y * step, 0));
+    }
 
     // SETTING TREES
-    this.treeNode.setPosition(new Vec3(0, 0, 0));
-    this.frogieController
+    this.gameModel.TreeNode.setPosition(new Vec3(0, 0, 0));
+    this.gameModel.FrogieController
       .getComponent(FrogieController)
-      .loadPos([].concat(data.posTrees, data.posBush, data.posFence, data.posWall));
+      .loadPos([].concat(data.posTrees, data.posBush, data.posFence, data.posWall, data.posFinishLine));
 
     for (let i = 0; i < data.posTrees.length; i++) {
-      let tree = instantiate(this.treeNode);
-      let leaf = instantiate(this.itemLeaf);
+      let tree = instantiate(this.gameModel.TreeNode);
+      let leaf = instantiate(this.gameModel.ItemLeaf);
 
-      this.container.addChild(tree);
-      this.containerLeaf.addChild(leaf);
+      this.gameModel.ContainerObstacle.addChild(tree);
+      this.gameModel.ContainerLeaf.addChild(leaf);
       tree.setPosition(
         new Vec3(data.posTrees[i].x * step, data.posTrees[i].y * step + step, 0)
       );
@@ -135,44 +104,13 @@ export class GameController extends Component {
       tree.setScale(new Vec3(0.5, 0.5));
     }
 
-    // SETTING WALL
-    // this.wallNode.setPosition(new Vec3(0, 0, 0));
-    
-    // for (let i = 0; i< data.posWall.length; i++) {
-    //   let wall = instantiate(this.wallNode);
-
-    //   this.container.addChild(wall);
-    //   wall.setPosition(new Vec3(data.posWall[i].x * step, data.posWall[i].y * step, 0));
-    // }
-
-    const coordinates: {x: number, y: number}[] = [];
-
-    this.wallNode.setPosition(new Vec3(0, 0, 0));
-    
-    for (let i = 0; i< data.posWall.length; i++) {
-      for (let x = data.posWall[i].x ; x <= 30; x++){
-        coordinates.push({x: x, y: data.posWall[i].y})
-        console.log('x',data.posWall[i].x++)
-      }
-
-      for (let y = data.posWall[i].y ; y <= 30; y++){
-        coordinates.push({x: data.posWall[i].x, y: y})
-        console.log('y',data.posWall[i].y++)
-      }
-
-      let wall = instantiate(this.wallNode);
-
-      this.container.addChild(wall);
-      wall.setPosition(new Vec3(data.posWall[i].x * step, data.posWall[i].y * step, 0));
-    }
-
     // SETTING BUSH
-    this.bushNode.setPosition(new Vec3(0, 0, 0));
+    this.gameModel.BushNode.setPosition(new Vec3(0, 0, 0));
 
     for (let i = 0; i < data.posBush.length; i++) {
-      let bush = instantiate(this.bushNode);
+      let bush = instantiate(this.gameModel.BushNode);
 
-      this.container.addChild(bush);
+      this.gameModel.ContainerObstacle.addChild(bush);
       bush.setPosition(
         new Vec3(data.posBush[i].x * step, data.posBush[i].y * step, 0)
       );
@@ -180,12 +118,12 @@ export class GameController extends Component {
     }
 
     // SETTING FENCE
-    this.fenceNode.setPosition(new Vec3(0, 0, 0));
+    this.gameModel.FenceNode.setPosition(new Vec3(0, 0, 0));
 
     for (let i = 0; i < data.posFence.length; i += 7) {
-      let fence = instantiate(this.fenceNode);
+      let fence = instantiate(this.gameModel.FenceNode);
 
-      this.container.addChild(fence);
+      this.gameModel.ContainerObstacle.addChild(fence);
       fence.setPosition(
         new Vec3(data.posFence[i].x * step, data.posFence[i].y * step, 0)
       );
@@ -249,8 +187,8 @@ export class GameController extends Component {
       // this.gameModel.AudioBackground.volume = 0;
     }
 
-    this.frogieNode = this.frogieController.getComponent(FrogieController);
-    const frogieCollider = this.frogieNode.getComponent(Collider2D);
+    this.gameModel.FrogieNode = this.gameModel.FrogieController.getComponent(FrogieController);
+    const frogieCollider = this.gameModel.FrogieNode.getComponent(Collider2D);
 
     if (frogieCollider) {
       frogieCollider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
@@ -267,7 +205,7 @@ export class GameController extends Component {
     // GAME OVER
 
     if (otherCollider.node.name.startsWith("Car")) {
-      this.frogieController.frogieCrash();
+      this.gameModel.FrogieController.frogieCrash();
       this.cameraController.shakingCamera();
       this.gameModel.AudioAccident.play();
 
@@ -275,16 +213,19 @@ export class GameController extends Component {
         director.pause();
       }, 2);
 
-      this.resultController.showResult();
+      this.gameModel.Result.showResult();
     }
 
     // COLLISION WITH FINISHLINE
 
     if (otherCollider.node.name === "FinishLine") {
-      this.FinishController.showFinish();
-      this.schedule(function () {
-        director.pause();
-      }, 2);
+      this.gameModel.Finish.showFinish();
+      GameController.gameLevel++;
+      console.log(GameController.gameLevel)
+      
+      // this.schedule(function () {
+      //   director.pause();
+      // }, 2);
     }
   }
 
@@ -313,7 +254,6 @@ export class GameController extends Component {
     this.iconShow.node.active = false;
     this.iconOff.node.active = true;
     this.audioController.pauseAudio();
-
   }
 
   // ------LOAD SCENE------
@@ -333,14 +273,14 @@ export class GameController extends Component {
   // SETTING CARS
   protected spawnCar(): void {
     if (this.gameModel.CarsNode.children.length < 5) {
-      const randomCarIndex = randomRangeInt(0, this.listSpriteFrame.length);
-      const carsNode = instantiate(this.prefabCar).getComponent(
+      const randomCarIndex = randomRangeInt(0, this.gameModel.ListFrameCar.length);
+      const carsNode = instantiate(this.gameModel.PrefabCar).getComponent(
         CarPrefabController
       );
       carsNode.getComponent(Sprite).spriteFrame =
-        this.listSpriteFrame[randomCarIndex];
+        this.gameModel.ListFrameCar[randomCarIndex];
       carsNode.getComponent(Animation).defaultClip =
-        this.listAnimationCars[randomCarIndex];
+        this.gameModel.AnimationCars[randomCarIndex];
       carsNode.Init(this.gameModel.CarsNode);
 
       carsNode.getComponent(Animation).play();

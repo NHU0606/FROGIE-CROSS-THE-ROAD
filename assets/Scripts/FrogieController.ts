@@ -13,14 +13,14 @@ import {
   Collider2D,
   log,
 } from "cc";
-import { step } from "./DataType";
+import { Data, step } from "./DataType";
 const { ccclass, property } = _decorator;
 
 @ccclass("FrogieController")
 export class FrogieController extends Component {
   anim: Animation | null = null;
   speed: number = step;
-
+  private level: number = 0;
   private posObstacle: Array<{ x: number; y: number }>;
 
   private check = {
@@ -44,15 +44,11 @@ export class FrogieController extends Component {
   }
 
   protected onKeyDown(event: EventKeyboard): void {
+    const data = Data[this.level];
     switch (event.keyCode) {
       case KeyCode.ARROW_LEFT:
         this.anim.play("LeftMove");
-        if (!this.check.left) {
-          tween(this.node)
-            .to(0, { scale: new Vec3(-1, 1, 1) })
-            .start();
-          break;
-        }
+        if (!this.check.left || this.pos.x <= data.posWall.minX) break;
         this.pos = { x: this.pos.x - 1, y: this.pos.y };
         const leftDirection = new Vec3(
           this.pos.x * this.speed,
@@ -66,7 +62,7 @@ export class FrogieController extends Component {
         this.setCheck();
         break;
       case KeyCode.ARROW_RIGHT:
-        if (!this.check.right) break;
+        if (!this.check.right || this.pos.x >= data.posWall.maxX) break;
         this.pos = { x: this.pos.x + 1, y: this.pos.y };
         const rightDirection = new Vec3(
           this.pos.x * this.speed,
@@ -81,7 +77,7 @@ export class FrogieController extends Component {
         this.setCheck();
         break;
       case KeyCode.ARROW_UP:
-        if (!this.check.up) break;
+        if (!this.check.up || this.pos.y >= data.posWall.maxY) break;
         this.pos = { x: this.pos.x, y: this.pos.y + 1 };
         const upDirection = new Vec3(
           this.pos.x * this.speed,
@@ -93,7 +89,7 @@ export class FrogieController extends Component {
         this.setCheck();
         break;
       case KeyCode.ARROW_DOWN:
-        if (!this.check.down) break;
+        if (!this.check.down || this.pos.y <= data.posWall.minY) break;
         this.pos = { x: this.pos.x, y: this.pos.y - 1 };
         const downDirection = new Vec3(
           this.pos.x * this.speed,

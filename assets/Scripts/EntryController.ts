@@ -23,7 +23,7 @@ export class EntryController extends Component {
     private audioOn: Button = null;
 
     protected onClickPlayBtn(): void {
-        director.loadScene('Play');
+        director.loadScene('SelectLevel');
     }
 
     protected start(): void {
