@@ -43,6 +43,17 @@ export class GameModel extends Component {
     // OBSTACLES
 
     @property({type: Node})
+    private water: Node;
+
+    public get Water() : Node {
+        return this.water;
+    }
+    
+    public set Water(water : Node) {
+        this.water = water;
+    }
+
+    @property({type: Node})
     private floor: Node;
 
     public get Floor() : Node {
@@ -84,6 +95,17 @@ export class GameModel extends Component {
     
     public set CarsNode(carsNode : Node) {
         this.carsNode = carsNode;
+    }
+
+    @property({type: Node})
+    private wood: Node;
+
+    public get Wood() : Node {
+        return this.wood;
+    }
+    
+    public set Wood(wood : Node) {
+        this.wood = wood;
     }
 
     @property({ type: SpriteFrame })
@@ -183,6 +205,29 @@ export class GameModel extends Component {
     
     public set ItemLeaf(itemLeaf : Node) {
         this.itemLeaf = itemLeaf;
+    }
+
+    // -----
+    @property({ type: Node })
+    private containerTopWater: Node;
+
+    public get ContainerTopWater() : Node {
+        return this.containerTopWater;
+    }
+    
+    public set ContainerTopWater(containerTopWater : Node) {
+        this.containerTopWater = containerTopWater;
+    }
+
+    @property({ type: Node })
+    private itemTopWater: Node;
+  
+    public get ItemTopWater() : Node {
+        return this.itemTopWater;
+    }
+    
+    public set ItemTopWater(itemTopWater : Node) {
+        this.itemTopWater = itemTopWater;
     }
     // FINISH + RESULT NODE 
 
@@ -286,6 +331,18 @@ export class GameModel extends Component {
     
     public set AudioCar(audioCar : AudioSource) {
         this.audioCar = audioCar;
+    }
+
+    //BACKGROUND
+    @property({ type: Node})
+    private background: Node = null;
+
+    public get Background() : Node {
+        return this.background;
+    }
+    
+    public set Background(background : Node) {
+        this.background = background;
     }
 }
 

@@ -1,4 +1,5 @@
 import { _decorator, Component, Node, math, Vec3, Collider2D, SpriteFrame, random, Sprite } from 'cc';
+import { Data, GameConfig } from "./DataType";
 const { ccclass, property } = _decorator;
 
 enum CarsDirection {
@@ -13,12 +14,16 @@ export class CarPrefabController extends Component {
     private directionChangeTime: number = 0;
 
     protected start(): void {
+        const data = Data[GameConfig.level];
+
+        const randomLane = Math.random() < 0.5 ? data.posCar.lane1 : data.posCar.lane2;
         const carCollider = this.node.getComponent(Collider2D);
         if (carCollider) {
-            carCollider.node.position = new Vec3(-1150,math.randomRangeInt(450, 550),0);
+            carCollider.node.position = new Vec3( -1150, randomLane, 0);
             carCollider.apply();
         }
     }
+    
     public Init(parent: Node): void {
         parent.addChild(this.node);
     }

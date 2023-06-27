@@ -1,3 +1,4 @@
+import { ResultController } from "./ResultController";
 import { Vec2 } from "cc";
 import {
   _decorator,
@@ -13,15 +14,18 @@ import {
   Collider2D,
   log,
 } from "cc";
-import { Data, step } from "./DataType";
+import { Data, GameConfig, step } from "./DataType";
 const { ccclass, property } = _decorator;
 
 @ccclass("FrogieController")
 export class FrogieController extends Component {
-  anim: Animation | null = null;
-  speed: number = step;
-  private level: number = 0;
+  private anim: Animation | null = null;
+  private speed: number = step;
   private posObstacle: Array<{ x: number; y: number }>;
+
+  private posWater: Array<{ x: number; y: number }> = new Array();
+  private posWood: Array<{ x: number; y: number }> = new Array();
+  private isDie: boolean = false;
 
   private check = {
     left: true,
@@ -40,11 +44,14 @@ export class FrogieController extends Component {
   protected onLoad(): void {
     input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
 
-    this.node.setPosition(new Vec3(this.pos.x * this.speed, this.pos.y * this.speed, 0));
+    this.node.setPosition(
+      new Vec3(this.pos.x * this.speed, this.pos.y * this.speed, 0)
+    );
   }
 
   protected onKeyDown(event: EventKeyboard): void {
-    const data = Data[this.level];
+    const data = Data[GameConfig.level];
+
     switch (event.keyCode) {
       case KeyCode.ARROW_LEFT:
         this.anim.play("LeftMove");
@@ -110,37 +117,73 @@ export class FrogieController extends Component {
     }, 0.2);
   }
 
+  frogieFallWater() {
+    this.anim.play("FallWater");
+  }
+
   public loadPos(_pos: Array<{ x: number; y: number }>): void {
     this.posObstacle = _pos;
   }
 
+  public loadPosWater(_pos: Array<{ x: number; y: number }>): void {
+    console.log(_pos);
+    this.posWater = _pos;
+  }
+
+  public loadPosWood(_pos: Array<{ x: number; y: number }>): void {
+    this.posWood = _pos;
+  }
+
+  public getIsDie(): boolean {
+    return this.isDie;
+  }
+
   public setCheck(): void {
+    if (
+      this.posWater.find(
+        (item) => JSON.stringify(item) === JSON.stringify(this.pos)
+      ) &&
+      !this.posWood.find(
+        (item) => JSON.stringify(item) === JSON.stringify(this.pos)
+      )
+    ) {
+      this.isDie = true;
+    }
+
     let temp = { x: this.pos.x - 1, y: this.pos.y };
-    if (!this.posObstacle.find((item) => JSON.stringify(item) === JSON.stringify(temp))
+    if (
+      !this.posObstacle.find(
+        (item) => JSON.stringify(item) === JSON.stringify(temp)
+      )
     ) {
       this.check.left = true;
-    }
-    else this.check.left = false;
+    } else this.check.left = false;
 
     temp = { x: this.pos.x + 1, y: this.pos.y };
-    if (!this.posObstacle.find((item) => JSON.stringify(item) === JSON.stringify(temp))
+    if (
+      !this.posObstacle.find(
+        (item) => JSON.stringify(item) === JSON.stringify(temp)
+      )
     ) {
       this.check.right = true;
-    }
-    else this.check.right = false;
+    } else this.check.right = false;
 
     temp = { x: this.pos.x, y: this.pos.y + 1 };
-    if (!this.posObstacle.find((item) => JSON.stringify(item) === JSON.stringify(temp))
+    if (
+      !this.posObstacle.find(
+        (item) => JSON.stringify(item) === JSON.stringify(temp)
+      )
     ) {
       this.check.up = true;
-    }
-    else this.check.up = false;
+    } else this.check.up = false;
 
     temp = { x: this.pos.x, y: this.pos.y - 1 };
-    if (!this.posObstacle.find((item) => JSON.stringify(item) === JSON.stringify(temp))
+    if (
+      !this.posObstacle.find(
+        (item) => JSON.stringify(item) === JSON.stringify(temp)
+      )
     ) {
       this.check.down = true;
-    }
-    else this.check.down = false;
+    } else this.check.down = false;
   }
 }
