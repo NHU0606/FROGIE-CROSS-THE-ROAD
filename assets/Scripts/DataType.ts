@@ -13,7 +13,7 @@ export const SCENE_NAME = {
   SelectLevel: "SelectLevel",
 };
 
-export let Stage = [0, 2, 2, 2, 2];
+export let Stage = [1, 0, 0, 0, 0];
 
 export const Data = [
   {

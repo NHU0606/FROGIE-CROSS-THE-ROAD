@@ -11,12 +11,6 @@ import {
 import { GameConfig, SCENE_NAME, Stage } from "../DataType";
 const { ccclass, property } = _decorator;
 
-enum LevelState {
-  Key,
-  Playing,
-  PlayDone,
-}
-
 @ccclass("LevelView")
 export class LevelView extends Component {
   @property({ type: SpriteFrame })
@@ -32,7 +26,7 @@ export class LevelView extends Component {
 
   protected onLoad(): void {
     let temp = JSON.parse(localStorage.getItem("data_level"));
-    temp = temp ? temp : [0, 2, 2, 2, 2];
+    temp = temp ? temp : [1, 0, 0, 0, 0];
 
     this.dataLevel = temp;
 

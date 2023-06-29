@@ -94,7 +94,6 @@ export class CarPrefabController extends Component {
   }
 
   protected update(dt: number): void {
-    // this._movecar(dt);
     this.moveCars(dt);
     this.updateDirection(dt);
   }
