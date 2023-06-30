@@ -11,6 +11,7 @@ export const SCENE_NAME = {
   Help: "Help",
   Entry: "Entry",
   SelectLevel: "SelectLevel",
+  End: "End"
 };
 
 export let Stage = [1, 0, 0, 0, 0];
@@ -31,15 +32,10 @@ export const Data = [
       maxX: 19,
       minX: -19,
     },
-    posObstacleDie: [
-      { type: "car", position: new Vec2(-1150, 450), direct: 1 },
-      { type: "car", position: new Vec2(-1400, 450), direct: 1 },
-      { type: "car", position: new Vec2(1150, 600), direct: -1 },
-    ],
     posCar: {
       laneXLeft: -1150,
       laneXRight: 1150,
-      laneYBot: 450,
+      laneYBot: 500,
       laneYTop: 600,
     },
     posPig: {
@@ -84,19 +80,19 @@ export const Data = [
     posCamera: {
       maxY: 1500,
       minY: -170,
-      maxX: 800,
-      minX: -800,
+      maxX: 500,
+      minX: -500,
     },
     posWall: {
       maxY: 35,
       minY: -9,
-      maxX: 25,
-      minX: -25,
+      maxX: 19,
+      minX: -19,
     },
     posCar: {
-      laneXLeft: -1300,
+      laneXLeft: -1150,
       laneXRight: 1300,
-      laneYBot: 250,
+      laneYBot: 300,
       laneYTop: 400,
     },
     posPig: {
@@ -162,14 +158,192 @@ export const Data = [
     posCamera: {
       maxY: 1500,
       minY: -170,
-      maxX: 800,
-      minX: -800,
+      maxX: 500,
+      minX: -500,
     },
     posWall: {
       maxY: 35,
       minY: -9,
-      maxX: 25,
-      minX: -25,
+      maxX: 19,
+      minX: -19,
+    },
+    posCar: {
+      laneXLeft: -1300,
+      laneXRight: 1300,
+      laneYBot: 850,
+      laneYTop: 1000,
+    },
+    posPig: {
+      laneXLeft: -1300,
+      laneXRight: 1300,
+      laneYBot: -1200,
+      laneYTop: 1300,
+    },
+    posWood: [
+      { x: -2, y: 5 },
+      { x: 0, y: 4 },
+      { x: 1, y: 3 },
+      { x: -10, y: 3 },
+      { x: -6, y: 4 },
+      { x: 10, y: 5 },
+      { x: 9, y: 3 },
+      { x: 10, y: 4 },
+      { x: 15, y: 4 },
+      { x: 20, y: 5 },
+      { x: -20, y: 5 },
+    ],
+    posFinishLine: [{ x: 0, y: 35 }],
+    posRoad: [
+      { x: -10, y: 18 },
+      { x: 10, y: 18 },
+    ],
+    posWater: [
+      { x: -20, y: 4 },
+      { x: -9, y: 4 },
+      { x: 2, y: 4 },
+      { x: 13, y: 4 },
+      { x: 24, y: 4 },
+    ],
+    posFloor: [
+      { x: -16, y: 21 },
+      { x: 3, y: 21 },
+      { x: 15, y: 21 },
+      { x: -16, y: 15 },
+      { x: 5, y: 15 },
+      { x: 15, y: 15 },
+    ],
+    posTrees: [
+      { x: 22, y: 30 },
+      { x: 18, y: 26 },
+      { x: -22, y: 27 },
+      { x: -18, y: 28 },
+      { x: 18, y: -2 },
+      { x: 14, y: -1 },
+      { x: -16, y: -4 },
+      { x: -20, y: -2 },
+      { x: -6, y: 2 },
+      { x: -20, y: 29 },
+      { x: 20, y: 29 },
+      { x: 17, y: 30 },
+      { x: 10, y: 7 },
+    ],
+    posBush: [
+      { x: -15, y: -4 },
+      { x: 5, y: -2 },
+      { x: 10, y: 15 },
+      { x: -5, y: 23 },
+      { x: -17, y: 10 },
+      { x: 16, y: 24 },
+    ],
+    posFence: [
+      { x: 10, y: 34 },
+      { x: -10, y: 34 },
+      { x: 20, y: 31 },
+      { x: -20, y: 31 },
+    ],
+  },
+  {
+    id: 4,
+    posCamera: {
+      maxY: 1500,
+      minY: -170,
+      maxX: 500,
+      minX: -500,
+    },
+    posWall: {
+      maxY: 35,
+      minY: -9,
+      maxX: 19,
+      minX: -19,
+    },
+    posFloor: [
+      { x: -16, y: 5 },
+      { x: 3, y: 5 },
+      { x: 15, y: 5 },
+      { x: -16, y: -1 },
+      { x: 5, y: -1 },
+      { x: 15, y: -1 },
+    ],
+    posCar: {
+      laneXLeft: -1300,
+      laneXRight: 1300,
+      laneYBot: 100,
+      laneYTop: 200,
+    },
+    posRoad: [
+      { x: -10, y: 2 },
+      { x: 10, y: 2 },
+    ],
+    posPig: {
+      laneXLeft: -1300,
+      laneXRight: 1300,
+      laneYBot: 350,
+      laneYTop: 500,
+    },
+    posWood: [
+      { x: -2, y: 15 },
+      { x: -10, y: 14 },
+      { x: 1, y: 13 },
+      { x: -10, y: 14 },
+      { x: -6, y: 14 },
+      { x: 11, y: 15 },
+      { x: 9, y: 13 },
+      { x: 10, y: 14 },
+      { x: 15, y: 14 },
+      { x: 20, y: 15 },
+      { x: -20, y: 15 },
+    ],
+    posFinishLine: [{ x: 0, y: 35 }],
+    posWater: [
+      { x: -20, y: 14 },
+      { x: -9, y: 14 },
+      { x: 2, y: 14 },
+      { x: 13, y: 14 },
+      { x: 24, y: 14 },
+    ],
+    posTrees: [
+      { x: 22, y: 30 },
+      { x: 18, y: 26 },
+      { x: -22, y: 27 },
+      { x: -18, y: 28 },
+      { x: 18, y: -2 },
+      { x: 14, y: -1 },
+      { x: -16, y: -4 },
+      { x: -20, y: -2 },
+      { x: -6, y: 2 },
+      { x: -20, y: 29 },
+      { x: 20, y: 29 },
+      { x: 17, y: 30 },
+      { x: 10, y: 7 },
+    ],
+    posBush: [
+      { x: -15, y: -4 },
+      { x: 5, y: -2 },
+      { x: 10, y: 15 },
+      { x: -5, y: 23 },
+      { x: -17, y: 10 },
+      { x: 16, y: 24 },
+    ],
+    posFence: [
+      { x: 10, y: 34 },
+      { x: -10, y: 34 },
+      { x: 20, y: 31 },
+      { x: -20, y: 31 },
+    ],
+  },
+  {
+    id: 5,
+    posCamera: {
+      maxY: 1500,
+      minY: -170,
+      maxX: 500,
+      minX: -500,
+    },
+    posWall: {
+      maxY: 35,
+      minY: -9,
+      maxX: 19,
+      minX: -19,
     },
     posCar: {
       laneXLeft: -1300,
@@ -244,6 +418,43 @@ export const Data = [
       { x: -10, y: 34 },
       { x: 20, y: 31 },
       { x: -20, y: 31 },
+    ],
+  },
+  {
+    id: 6,
+    posCamera: {
+     
+    },
+    posWall: {
+      
+    },
+    posCar: {
+     
+    },
+    posPig: {
+     
+    },
+    posWood: [
+      
+    ],
+    posFinishLine: [],
+    posRoad: [
+     
+    ],
+    posWater: [
+     
+    ],
+    posFloor: [
+      
+    ],
+    posTrees: [
+      
+    ],
+    posBush: [
+      
+    ],
+    posFence: [
+      
     ],
   },
 ];

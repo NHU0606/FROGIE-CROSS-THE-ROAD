@@ -1,9 +1,9 @@
-import { _decorator, Component, Label, Node, Sprite, Button, tween, Vec3 } from 'cc';
+import { _decorator, Button, Component, Label, Node, Sprite, tween, Vec3 } from 'cc';
 import { CameraController } from '../Play/CameraController';
 const { ccclass, property } = _decorator;
 
-@ccclass('ResultController')
-export class ResultController extends Component {
+@ccclass('WinController')
+export class WinController extends Component {
     @property({type: CameraController})
     private cameraController: CameraController;
 
@@ -20,13 +20,14 @@ export class ResultController extends Component {
     private playBtn: Button;
 
     @property({type: Label})
-    private overText: Label;
+    private winText: Label;
 
-    showResult() {
+    showWin() {
         this.node.active = true;
         const cameraController = this.cameraController.node.getPosition();
         this.node.setPosition(cameraController);
-        const downDirection = new Vec3(cameraController.x,cameraController.y-640, 0);
+        const downDirection = new Vec3(0,cameraController.y-640, 0);
+        // const downDirection = new Vec3(cameraController.x,cameraController.y-640, 0);
 
         tween(this.node)
         .to(0.5, {position: downDirection})

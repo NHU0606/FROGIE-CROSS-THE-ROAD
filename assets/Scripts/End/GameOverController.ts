@@ -1,9 +1,9 @@
+import { _decorator, Component, Label, Node, Sprite, Button, tween, Vec3 } from 'cc';
 import { CameraController } from '../Play/CameraController';
-import { _decorator, Component, Node, Sprite, Button, Label, Vec3, tween } from 'cc';
 const { ccclass, property } = _decorator;
 
-@ccclass('FinishController')
-export class FinishController extends Component {
+@ccclass('GameOverController')
+export class GameOverController extends Component {
     @property({type: CameraController})
     private cameraController: CameraController;
 
@@ -17,15 +17,12 @@ export class FinishController extends Component {
     private homeBtn: Button;
 
     @property({type: Button})
-    private playAgain: Button;
-
-    @property({type: Button})
-    private playNext: Button;
+    private playBtn: Button;
 
     @property({type: Label})
     private overText: Label;
 
-    public showFinish(): void {
+    showGameOver() {
         this.node.active = true;
         const cameraController = this.cameraController.node.getPosition();
         this.node.setPosition(cameraController);
@@ -35,10 +32,5 @@ export class FinishController extends Component {
         .to(0.5, {position: downDirection})
         .start();
     }
-
-    public hideFinish(): void {
-        this.node.active = false;
-    }
-
 }
 

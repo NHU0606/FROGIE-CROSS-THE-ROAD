@@ -4,9 +4,9 @@ import { GameModel } from "./GameModel";
 import { CameraController } from "./CameraController";
 import { PauseController } from "./PauseController";
 import { AudioController } from "./AudioController";
-import { Data, Stage, step } from "../DataType";
+import { Data, Stage, step, SCENE_NAME } from "../DataType";
 import { GameConfig } from "../DataType";
-import {_decorator,Collider2D, Component,Contact2DType, Vec3,instantiate, randomRangeInt, IPhysics2DContact, math, sys, UIOpacity, Button, AudioSource, director, Sprite, Animation} from "cc";
+import {_decorator,Collider2D, Component,Contact2DType, Vec3,instantiate, randomRangeInt, IPhysics2DContact, math, sys, UIOpacity, Button, AudioSource, director, Sprite, Animation, EventKeyboard, Input, input} from "cc";
 import { PigPrefab } from "./PigPrefab";
 const { ccclass, property } = _decorator;
 
@@ -40,16 +40,24 @@ export class GameController extends Component {
   private dataLevel: number[];
 
   protected onLoad(): void {
-    let temp = JSON.parse(localStorage.getItem("data_level"));
-    temp = temp ? temp : [0, 2, 2, 2, 2];
-    this.dataLevel = temp;
+    director.resume();
     const data = Data[GameConfig.level];
 
-    director.resume();
+    let temp = JSON.parse(localStorage.getItem("data_level"));
+    temp = temp ? temp : [1, 0, 0, 0, 0];
+    this.dataLevel = temp;
+    const levelCount = temp.length;
+    let currentLevel = GameConfig.level+1;
+
+    // check max level
+    if (currentLevel >= levelCount) {
+      director.loadScene(SCENE_NAME.End)
+    }
 
     const audioSrc = this.node.getComponent(AudioSource);
     this.gameModel.AudioBackground = audioSrc;
 
+    this.spawnWater();
     this.spawnWood();
     this.spawnFence();
     this.spawnTree();
@@ -83,9 +91,11 @@ export class GameController extends Component {
     }, math.randomRangeInt(2, 4));
 
     // spawn pig
-    this.schedule(function () {
-      this.spawnPig();
-    }, math.randomRangeInt(1, 3));
+    // setTimeout(function() {
+      this.schedule(function() {
+        this.spawnPig();
+      }, math.randomRangeInt(1, 3));
+    // }, 5000);
 
     var getVolumne = sys.localStorage.getItem("volume");
 
@@ -154,7 +164,6 @@ export class GameController extends Component {
           : this.dataLevel[GameConfig.level + 1];
 
       localStorage.setItem("data_level", JSON.stringify(this.dataLevel));
-
       this.touchFinishLine = true;
       this.gameModel.Finish.showFinish();
       this.scheduleOnce(function () {
@@ -335,7 +344,9 @@ export class GameController extends Component {
       this.gameModel.FrogieController.frogieCrash();
       this.cameraController.shakingCamera();
       this.gameModel.AudioAccident.play();
-      this.gameOver();
+      this.scheduleOnce(function () {
+        this.gameOver();
+      }, 0.2);
     }
   }
   //-------------------AUDIO-------------------
@@ -367,59 +378,64 @@ export class GameController extends Component {
   }
     //-------------------SPAWN CAR AND PIG---------------------
 
-    protected spawnCar(): void {
-      if (this.gameModel.CarsNode.children.length < 5) {
-        const randomCarIndex = randomRangeInt(
-          0,
-          this.gameModel.ListFrameCar.length
-        );
-        const carsNode = instantiate(this.gameModel.PrefabCar).getComponent(
-          CarPrefabController
-        );
-        carsNode.getComponent(Sprite).spriteFrame =
-          this.gameModel.ListFrameCar[randomCarIndex];
-        carsNode.getComponent(Animation).defaultClip =
-          this.gameModel.AnimationCars[randomCarIndex];
-        carsNode.Init(this.gameModel.CarsNode);
-  
-        carsNode.getComponent(Animation).play();
-        carsNode.getComponent(Collider2D).apply();
-      }
+  protected spawnCar(): void {
+    if (this.gameModel.CarsNode.children.length < 5) {
+      const randomCarIndex = randomRangeInt(
+        0,
+        this.gameModel.ListFrameCar.length
+      );
+      const carsNode = instantiate(this.gameModel.PrefabCar).getComponent(
+        CarPrefabController
+      );
+      carsNode.getComponent(Sprite).spriteFrame =
+        this.gameModel.ListFrameCar[randomCarIndex];
+      carsNode.getComponent(Animation).defaultClip =
+        this.gameModel.AnimationCars[randomCarIndex];
+      carsNode.Init(this.gameModel.CarsNode);
+
+      carsNode.getComponent(Animation).play();
+      carsNode.getComponent(Collider2D).apply();
     }
-  
-    protected spawnPig(): void {
-      if (this.gameModel.PigNode.children.length < 3) {
-        const pigNode = instantiate(this.gameModel.PrefabPig).getComponent(
-          PigPrefab
-        );
-        pigNode.Initt(this.gameModel.PigNode);
-        pigNode.getComponent(Collider2D).apply();
-      }
+  }
+
+  protected spawnPig(): void {
+    if (this.gameModel.PigNode.children.length < 3) {
+      const pigNode = instantiate(this.gameModel.PrefabPig).getComponent(
+        PigPrefab
+      );
+      pigNode.Initt(this.gameModel.PigNode);
+      pigNode.getComponent(Collider2D).apply();
     }
-  
-    //------------------PAUSE---------------------
-  
-    protected onClickIconPause(): void {
-      let opacityBtnOff = this.iconOff.getComponent(UIOpacity);
-      let opacityBtnOn = this.iconShow.getComponent(UIOpacity);
-  
-      this.pause.IsPause = !this.pause.IsPause;
-      if (this.pause.IsPause) {
-        // this.iconOff.interactable = false;
-        // this.iconShow.interactable = false;
-        // opacityBtnOff.opacity = 0;
-        // opacityBtnOn.opacity = 0;
-        // this.audioController.node.active = false;
-        director.pause();
-      } else {
-        director.resume();
-        // this.iconOff.interactable = true;
-        // this.iconShow.interactable = true;
-        // this.audioController.node.active = true;
-        // opacityBtnOff.opacity = 255;
-        // opacityBtnOn.opacity = 255;
-      }
+  }
+
+  //------------------PAUSE---------------------
+
+  protected onClickIconPause(): void {
+    
+    let opacityBtnOff = this.iconOff.getComponent(UIOpacity);
+    let opacityBtnOn = this.iconShow.getComponent(UIOpacity);
+    
+    this.pause.IsPause = !this.pause.IsPause;
+    if (this.pause.IsPause) {
+      input.off(Input.EventType.KEY_DOWN);
+      // input.off(Input.EventType.KEY_DOWN);
+      // this.iconOff.interactable = false;
+      // this.iconShow.interactable = false;
+      // opacityBtnOff.opacity = 0;
+      // opacityBtnOn.opacity = 0;
+      // this.audioController.node.active = false;
+      director.pause();
+    } else {
+      director.resume();
+      this.gameModel.FrogieController.handleOnKeyDown();
+      // input.on(Input.EventType.KEY_DOWN,this.gameModel.FrogieController.onKeyDown,this)
+      // this.iconOff.interactable = true;
+      // this.iconShow.interactable = true;
+      // this.audioController.node.active = true;
+      // opacityBtnOff.opacity = 255;
+      // opacityBtnOn.opacity = 255;
     }
+  }
   
 
   // -----------------------------TIME----------------------------
@@ -440,12 +456,14 @@ export class GameController extends Component {
 
   // --------------------- LEVEL TEXT -------------------------------
   protected updateLevelLable(): void {
-    this.gameModel.LevelLabel.string = "Level:  " + GameConfig.level;
+    let textLevel = GameConfig.level+1;
+    this.gameModel.LevelLabel.string = "Level:  " + textLevel;
+    console.log("lv", textLevel)
   }
   // --------------------------game over src-------------------------
   protected gameOver(): void {
     this.scheduleOnce(function () {
-      this.gameModel.Result.showResult();
+      this.gameModel.GameOver.showGameOver();
     }, 0.2);
     this.schedule(function () {
       director.pause();

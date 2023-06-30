@@ -1,7 +1,8 @@
 import { _decorator, Component, Node, AnimationClip, SpriteFrame, Button, AudioSource, Sprite, Prefab, Collider2D, Label, CCInteger } from 'cc';
-import { ResultController } from "../End/ResultController";
 import { FrogieController } from "./FrogieController";
+import { GameOverController } from "../End/GameOverController";
 import { FinishController } from '../End/FinishController';
+import { WinController } from '../End/WinController';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameModel')
@@ -251,19 +252,7 @@ export class GameModel extends Component {
     public set ItemTopWater(itemTopWater : Node) {
         this.itemTopWater = itemTopWater;
     }
-    // FINISH + RESULT NODE 
-
-    @property({ type: ResultController })
-    private resultController: ResultController;    
-
-    public get Result() : ResultController {
-        return this.resultController;
-    }
-    
-    public set Result(resultController : ResultController) {
-        this.resultController = resultController;
-    } 
-
+    // FINISH + RESULT + WIN NODE 
     @property({ type: FinishController })
     private FinishController: FinishController;
 
@@ -273,6 +262,28 @@ export class GameModel extends Component {
     
     public set Finish(FinishController : FinishController) {
         this.FinishController = FinishController;
+    } 
+
+    @property({type: WinController})
+    private win: WinController;
+
+    public get Win() : WinController {
+        return this.win;
+    }
+    
+    public set Win(WinController : WinController) {
+        this.win = WinController;
+    } 
+
+    @property({ type: GameOverController })
+    private gameOver: GameOverController;    
+
+    public get GameOver() : GameOverController {
+        return this.gameOver;
+    }
+    
+    public set GameOver(GameOverController : GameOverController) {
+        this.gameOver = GameOverController;
     } 
        
     // BTN AUDIO 

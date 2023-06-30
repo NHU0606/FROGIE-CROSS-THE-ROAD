@@ -10,10 +10,6 @@ export class EntryController extends Component {
     private variableVolumeArray: number[] = [];
     private convertVolume: number;
 
-
-    @property({type: Button})
-    private playBtn: Button;
-
     @property({type: AudioSource})
     private audioBackground: AudioSource = null;
 
@@ -92,6 +88,10 @@ export class EntryController extends Component {
     protected updateIconsVisibility(): void {
         this.audioOn.node.active = this.isIconShown;
         this.audioOff.node.active = !this.isIconShown;
+    }
+
+    protected onClickHelpBtn(): void {
+        director.loadScene(SCENE_NAME.Help)
     }
 }
 

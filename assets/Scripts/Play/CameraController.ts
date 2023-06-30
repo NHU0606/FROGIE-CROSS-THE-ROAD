@@ -9,7 +9,7 @@ export class CameraController extends Component {
     private frogieController: FrogieController;
 
     private anim: Animation | null = null;
-  camera: any;
+    camera: any;
 
     protected start(): void {
         this.anim = this.node.getComponent(Animation)

@@ -8,9 +8,9 @@ enum PigDirection {
 
 @ccclass('PigPrefab')
 export class PigPrefab extends Component {
-    private pigSpeed: number = 300;
+    private pigSpeed: number = 400;
     private curDirection: PigDirection = PigDirection.Left;
-    private directionChangeDelay: number = 20;
+    private directionChangeDelay: number = 15;
     private directionChangeTime: number = 0;
     private laneY: number = 0;
 
