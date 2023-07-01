@@ -68,7 +68,7 @@ export class GameController extends Component {
 
     //-------------------LOAD ALL POS OBSTACLE---------------------
     this.gameModel.FrogieController.getComponent(FrogieController).loadPos(
-      [].concat(data.posTrees, data.posBush, data.posWall, data.posWater));
+      [].concat(this.spawnFence(), data.posTrees, data.posBush, data.posWall, data.posWater));
   }
 
   
@@ -175,14 +175,8 @@ export class GameController extends Component {
   //-------------------SPAWN OBSTACLE-------------------
   protected spawnWater(): void {
     const data = Data[GameConfig.level];
-    const _posWater: Array<{ x: number; y: number }> = new Array();
-
-    data.posWater.map((location) => {
-      for (let i = -6; i <= 6; i++)
-        for (let j = -1; j <= 1; j++)
-          _posWater.push({ x: location.x + i, y: location.y + j });
-    });
-
+    let _posWater: Array<{ x: number; y: number }> = new Array();
+    _posWater = this.spawnObstacleVelHor(data.posWater)
     for (let i = 0; i < data.posWater.length; i++) {
       let water = instantiate(this.gameModel.Water);
       let topWater = instantiate(this.gameModel.ItemTopWater);
@@ -206,46 +200,23 @@ export class GameController extends Component {
   }
   protected spawnWood(): void {
     const data = Data[GameConfig.level];
-    const _posWood: Array<{ x: number; y: number }> = new Array();
+    let _posWood: Array<{ x: number; y: number }> = new Array();
+    _posWood = this.spawnObstacleHor(data.posWood)
 
-    data.posWood.map((location: { x: number; y: any }) => {
-      for (let i = -1; i <= 1; i++)
-        _posWood.push({ x: location.x + i, y: location.y });
-    });
-
-    for (let i = 0; i < data.posWood.length; i++) {
-      let wood = instantiate(this.gameModel.Wood);
-
-      this.gameModel.ContainerObstacle.addChild(wood);
-      wood.setPosition(
-        new Vec3(data.posWood[i].x * step, data.posWood[i].y * step, 0)
-      );
-    }
-
+    this.setPosWood(data.posWood, this.gameModel.Wood, this.gameModel);
     this.gameModel.FrogieController.getComponent(FrogieController).loadPosWood(
       _posWood
     );
   }
 
-  protected spawnFence(): void {
+  protected spawnFence() {
     const data = Data[GameConfig.level];
-    const _posFence: Array<{ x: number; y: number }> = new Array();
-    // space froggie cannot move on fence
-    data.posFence.map((location) => {
-      for (let i = -3; i <= 3; i++)
-        _posFence.push({ x: location.x + i, y: location.y });
-    });
-    // load posFence to show Fence
-    for (let i = 0; i < data.posFence.length; i++) {
-      let fence = instantiate(this.gameModel.FenceNode);
-
-      this.gameModel.ContainerObstacle.addChild(fence);
-      fence.setPosition(
-        new Vec3(data.posFence[i].x * step, data.posFence[i].y * step, 0)
-      );
-      fence.setScale(new Vec3(1, 1));
-    }
+    let _posFence: Array<{ x: number; y: number }> = new Array();
+    _posFence = this.spawnObstacleHor(data.posFence, -3, 3)
+    
+    this.setPosWood(data.posFence, this.gameModel.FenceNode, this.gameModel)
     this.gameModel.FrogieController.getComponent(FrogieController).loadPos(_posFence);
+    return _posFence;
   }
 
   protected spawnTree(): void {
@@ -273,28 +244,12 @@ export class GameController extends Component {
   }
 
   protected spawnFinishLine(): void {
-    const _posFinishLine: Array<{ x: number; y: number }> = new Array();
     const data = Data[GameConfig.level];
+    console.log("dataFinish", data.posFinishLine)
+    let _posFinishLine: Array<{ x: number; y: number }> = new Array();
+    _posFinishLine = this.spawnObstacleVelHor(data.posFinishLine, -2, 2, 0, 1);
 
-    data.posFinishLine.map((location) => {
-      for (let i = -2; i <= 2; i++)
-        for (let j = 0; j <= 1; j++) {
-          _posFinishLine.push({ x: location.x + i, y: location.y + j });
-        }
-    });
-
-    for (let i = 0; i < data.posFinishLine.length; i++) {
-      var finishLine = instantiate(this.gameModel.FinishLine);
-      this.gameModel.ContainerObstacle.addChild(finishLine);
-      finishLine.setPosition(
-        new Vec3(
-          data.posFinishLine[i].x * step,
-          data.posFinishLine[i].y * step,
-          0
-        )
-      );
-    }
-
+    this.setPosWood(data.posFinishLine, this.gameModel.FinishLine, this.gameModel)
     this.gameModel.FrogieController.getComponent(
       FrogieController
     ).loadPosFinish(_posFinishLine);
@@ -302,32 +257,17 @@ export class GameController extends Component {
 
   protected spawnRoad(): void {
     const data = Data[GameConfig.level];
-    for (let i = 0; i < data.posRoad.length; i++) {
-      var road = instantiate(this.gameModel.Road);
-      this.gameModel.ContainerObstacle.addChild(road);
-      road.setPosition(
-        new Vec3(data.posRoad[i].x * step, data.posRoad[i].y * step, 0)
-      );
-    }
+    this.setPosWood(data.posRoad, this.gameModel.Road, this.gameModel);
   }
 
   protected spawnFloor(): void {
     const data = Data[GameConfig.level];
-    for (let i = 0; i < data.posFloor.length; i++) {
-      var floor = instantiate(this.gameModel.Floor);
-      this.gameModel.ContainerObstacle.addChild(floor);
-      floor.setPosition(new Vec3(data.posFloor[i].x * step, data.posFloor[i].y * step, 0));
-    }
+    this.setPosWood(data.posFloor, this.gameModel.Floor, this.gameModel);
   }
 
   protected spawnBush(): void {
     const data = Data[GameConfig.level];
-    for (let i = 0; i < data.posBush.length; i++) {
-      let bush = instantiate(this.gameModel.BushNode);
-      this.gameModel.ContainerObstacle.addChild(bush);
-      bush.setPosition( new Vec3(data.posBush[i].x * step, data.posBush[i].y * step, 0));
-      bush.setScale(new Vec3(0.3, 0.2));
-    }
+    this.setPosWood(data.posBush, this.gameModel.BushNode, this.gameModel);
   }
   //-------------------COLLISION COLLIDER-------------------
 
@@ -458,7 +398,6 @@ export class GameController extends Component {
   protected updateLevelLable(): void {
     let textLevel = GameConfig.level+1;
     this.gameModel.LevelLabel.string = "Level:  " + textLevel;
-    console.log("lv", textLevel)
   }
   // --------------------------game over src-------------------------
   protected gameOver(): void {
@@ -468,5 +407,36 @@ export class GameController extends Component {
     this.schedule(function () {
       director.pause();
     }, 1);
+  }
+
+  protected spawnObstacleHor(dataPosWood, from = -1, to = 1) {
+    const _posWood: Array<{ x: number; y: number }> = new Array();
+
+    dataPosWood.map((location: { x: number; y: any }) => {
+      for (let i = from; i <= to; i++)
+        _posWood.push({ x: location.x + i, y: location.y });
+    });
+    return _posWood;
+  }
+  
+  protected spawnObstacleVelHor(dataPosWater, from1 = -6, to1 = 6, from2 = -1, to2 = 1) {
+    const _posWater: Array<{ x: number; y: number }> = new Array();
+
+    dataPosWater.map((location: { x: number; y: any }) => {
+      for (let i = from1; i <= to1; i++)
+        for (let j = from2; j <= to2; j++)
+          _posWater.push({ x: location.x + i, y: location.y + j });
+    });
+    return _posWater;
+  }
+
+  protected setPosWood(dataPosWood, gameModelName, gameModel) {
+    for (let i = 0; i < dataPosWood.length; i++) {
+      let wood = instantiate(gameModelName);
+      gameModel.ContainerObstacle.addChild(wood);
+      wood.setPosition(
+        new Vec3(dataPosWood[i].x * step, dataPosWood[i].y * step, 0)
+      );
+    }
   }
 }
