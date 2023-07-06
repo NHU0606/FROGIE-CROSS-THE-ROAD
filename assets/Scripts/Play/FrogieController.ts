@@ -1,20 +1,5 @@
 import { Data, GameConfig, step } from "../DataType";
-import {
-  _decorator,
-  Component,
-  EventKeyboard,
-  Input,
-  input,
-  tween,
-  KeyCode,
-  Node,
-  Vec3,
-  Animation,
-  Collider2D,
-  log,
-  director,
-  cclegacy,
-} from "cc";
+import { _decorator, Component,EventKeyboard, Input,input,tween,KeyCode,Vec3, Animation, Vec2,CCFloat, v3,} from "cc";
 const { ccclass, property } = _decorator;
 
 @ccclass("FrogieController")
@@ -36,7 +21,10 @@ export class FrogieController extends Component {
   };
 
   private pos: { x: number; y: number } = { x: 0, y: -8 };
+  @property({type: CCFloat})
 
+	private axis: Vec2 = new Vec2();
+ 
   protected start(): void {
     this.anim = this.node.getComponent(Animation);
   }
@@ -52,6 +40,40 @@ export class FrogieController extends Component {
       new Vec3(this.pos.x * this.speed, this.pos.y * this.speed, 0)
     );
   }
+
+  protected update(dt: number): void {
+		var offset = this.speed*dt;
+		// this.node.setPosition(this.node.position.add(v3(this.axis.x*offset, this.axis.y*offset, 0.0)));
+	}
+
+  public OnMove(event: Event, customEventData: Vec2) {
+    
+    this.axis = customEventData;
+    const { x, y } = this.pos;
+    const data = Data[GameConfig.level];
+    
+    let newPosition: Vec3 = new Vec3(x * this.speed, y * this.speed, 0);
+
+    if (this.axis.x !== 0) {
+        const newX = x + Math.sign(this.axis.x);
+        if (this.pos.x >= data.posWall.minX && this.pos.x <= data.posWall.maxX) {
+            newPosition.x = newX * this.speed;
+            this.pos.x = newX;
+            this.anim.play("LeftMove");
+        }
+    } else if (this.axis.y !== 0) {
+        const newY = y + Math.sign(this.axis.y);
+        if (this.pos.y >= data.posWall.minY && this.pos.y <= data.posWall.maxY) {
+            newPosition.y = newY * this.speed;
+            this.pos.y = newY;
+            this.anim.play("Move");
+        }
+    }
+    tween(this.node)
+        .to(0.48, { position: newPosition })
+        .start();
+    this.setCheck();
+}
 
   public onKeyDown(event: EventKeyboard): void {
     const data = Data[GameConfig.level];
@@ -141,6 +163,7 @@ export class FrogieController extends Component {
   }
 
   public setCheck(): void {
+    console.log(this.pos)
     const { x, y } = this.pos;
 
     //-------------------CHECK TOUCH WATER OR NOT---------------------
@@ -152,7 +175,7 @@ export class FrogieController extends Component {
     //-------------------CHECK TOUCH FINISH LINE---------------------
 
     this.touchFinishLine = this.posFinishLine.some(
-      (item) => item.x === x && item.y === y
+      (item) =>  item.x === x && item.y === y
     );
 
     //-------------------CHECK POS OBSTACLE---------------------
@@ -170,5 +193,5 @@ export class FrogieController extends Component {
         (item) => item.x === pos.x && item.y === pos.y
       );
     });
-  }
+  }  
 }

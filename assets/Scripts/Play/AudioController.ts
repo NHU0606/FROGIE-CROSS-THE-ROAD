@@ -1,29 +1,13 @@
-import { GameModel } from '../Play/GameModel';
-import { _decorator, AudioSource, Component, director, input, Input, Node, Sprite } from 'cc';
+import { _decorator, AudioSource, Component, director, input, Input, Node, Sprite, sys } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('AudioController')
 export class AudioController extends Component {
-    @property({type: GameModel})
-    private gameModel: GameModel;
-
-    private isIconShown: boolean = false;
+    private isiconToShown: boolean = false;
     private isMuted: boolean = false;
 
     @property(AudioSource)
     public audioBackground: AudioSource = null;
-
-    @property(AudioSource)
-    private audioFall: AudioSource = null;
-
-    @property(AudioSource)
-    private audioAccident: AudioSource = null;
-
-    @property(AudioSource)
-    private audioBtn: AudioSource = null;
-
-    @property(AudioSource)
-    private audioCar: AudioSource = null;
 
     public get IsMuted() : boolean {
         return this.isMuted;
@@ -55,9 +39,37 @@ export class AudioController extends Component {
         this.iconToHide = iconToHide;
     } 
 
-    start() {
+        private variableVolume: number;
+        private variableVolumeArray: number[] = [];
+        private convertVolume: number;
+        
+    protected start(): void {
         this.iconToShow.node.active = true;
         this.iconToHide.node.active = false;
+    
+        var getVolumne = sys.localStorage.getItem("volume");
+    
+        if (getVolumne) {
+          this.variableVolumeArray = JSON.parse(getVolumne);
+          localStorage.setItem("volume", JSON.stringify(this.variableVolumeArray));
+        } else {
+          this.onAudio();
+          this.iconToShow.node.active = true;
+          this.iconToHide.node.active = false;
+        }
+    
+        this.convertVolume = this.variableVolumeArray[this.variableVolumeArray.length - 1];
+        if (this.convertVolume === 1) {
+          this.iconToShow.node.active = true;
+          this.iconToHide.node.active = false;
+          this.onAudio();
+        } else if (this.convertVolume === 0) {
+          this.iconToShow.node.active = false;
+          this.iconToHide.node.active = true;
+          this.audioBackground.volume = 0;
+
+        }
+    
     }
 
     protected onLoad(): void {
@@ -75,20 +87,33 @@ export class AudioController extends Component {
     }  
 
     onToggleButtonClicked() {
-        this.isIconShown = !this.isIconShown;
+        this.isiconToShown = !this.isiconToShown;
         this.updateIconsVisibility();
     }
 
     updateIconsVisibility() {
-        this.iconToShow.node.active = this.isIconShown;
-        this.iconToHide.node.active = !this.isIconShown;
+        this.iconToShow.node.active = this.isiconToShown;
+        this.iconToHide.node.active = !this.isiconToShown;
     }
 
-    playAudio() {
+    protected onAudio(): void {
+        this.variableVolume = 1;
+        this.variableVolumeArray.push(this.variableVolume);
+        sys.localStorage.setItem("volume",JSON.stringify(this.variableVolumeArray));
+    
+        this.iconToShow.node.active = true;
+        this.iconToHide.node.active = false;
         this.audioBackground.volume = 1;
-    }
-
-    pauseAudio() {
+      }
+    
+    protected offAudio(): void {
+        this.variableVolume = 0;
+        this.variableVolumeArray.push(this.variableVolume);
+        sys.localStorage.setItem("volume",JSON.stringify(this.variableVolumeArray));
+    
+        this.iconToShow.node.active = false;
+        this.iconToHide.node.active = true;
+        this.audioBackground.volume = 1;
         this.audioBackground.volume = 0;
-    }    
+      }
 }

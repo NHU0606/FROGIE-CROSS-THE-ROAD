@@ -8,23 +8,24 @@ enum PigDirection {
 
 @ccclass('PigPrefab')
 export class PigPrefab extends Component {
-    private pigSpeed: number = 400;
-    private curDirection: PigDirection = PigDirection.Left;
-    private directionChangeDelay: number = 15;
-    private directionChangeTime: number = 0;
-    private laneY: number = 0;
+  private pigSpeed: number = 400;
+  private curDirection: PigDirection = PigDirection.Left;
+  private directionChangeDelay: number = 11;
+  private directionChangeTime: number = 0;
+  private laneY: number = 0;
 
-    start() {
-        const data = Data[GameConfig.level];
+  start() {
+      const data = Data[GameConfig.level];
 
-        this.laneY = Math.random() < 0.5 ? data.posPig.laneYBot : data.posPig.laneYTop;
-    
-        const pigCollider = this.node.getComponent(Collider2D);
-        if (pigCollider) {
-            pigCollider.node.position = new Vec3(data.posPig.laneXLeft, this.laneY, 0);
-            pigCollider.apply();
-        }
-    }
+      this.laneY = Math.random() < 0.5 ? data.posPig.laneYBot : data.posPig.laneYTop;
+  
+      const pigCollider = this.node.getComponent(Collider2D);
+      if (pigCollider) {
+          pigCollider.node.position = new Vec3(data.posPig.laneXLeft, this.laneY, 0);
+          pigCollider.apply();
+      }
+  }
+
 
     public Initt(parent: Node): void {
         parent.addChild(this.node);

@@ -32,8 +32,6 @@ export class LevelView extends Component {
     this.dataLevel = temp;
     this.layoutLevel.removeAllChildren();
 
-    console.log(this.layoutLevel);
-
     let startPos = 0;
 
     for (let i = 0; i < this.dataLevel.length; i++) {
@@ -41,9 +39,7 @@ export class LevelView extends Component {
 
       this.layoutLevel.addChild(level);
       level.setPosition(new Vec3(startPos, level.position.y,0));
-      startPos += 150;
-
-      console.log(level);
+      startPos += 120;
 
       level.getComponent(Sprite).spriteFrame =
         this.listFrameLevel[this.dataLevel[i]];

@@ -3,8 +3,8 @@ import { FrogieController } from "./FrogieController";
 import { GameModel } from "./GameModel";
 import { CameraController } from "./CameraController";
 import { PauseController } from "./PauseController";
-import { AudioController } from "./AudioController";
 import { Data, Stage, step, SCENE_NAME } from "../DataType";
+import { JoyStickController } from "./JoyStickController";
 import { GameConfig } from "../DataType";
 import {_decorator,Collider2D, Component,Contact2DType, Vec3,instantiate, randomRangeInt, IPhysics2DContact, math, sys, UIOpacity, Button, AudioSource, director, Sprite, Animation, EventKeyboard, Input, input} from "cc";
 import { PigPrefab } from "./PigPrefab";
@@ -15,12 +15,6 @@ export class GameController extends Component {
   @property({ type: GameModel })
   private gameModel: GameModel;
 
-  @property({ type: AudioController })
-  private audioController: AudioController;
-
-  @property({ type: CameraController })
-  private cameraController: CameraController;
-
   @property({ type: Button })
   private iconShow: Button = null;
 
@@ -30,9 +24,9 @@ export class GameController extends Component {
   @property({ type: PauseController })
   private pause: PauseController;
 
-  private variableVolume: number;
-  private variableVolumeArray: number[] = [];
-  private convertVolume: number;
+  @property({ type: CameraController })
+  private cameraController: CameraController;
+
   private FrogieCollider: Collider2D;
   private isDie: boolean = false;
   private time: number;
@@ -46,17 +40,11 @@ export class GameController extends Component {
     let temp = JSON.parse(localStorage.getItem("data_level"));
     temp = temp ? temp : [1, 0, 0, 0, 0];
     this.dataLevel = temp;
-    const levelCount = temp.length;
-    let currentLevel = GameConfig.level+1;
-
-    // check max level
-    if (currentLevel >= levelCount) {
-      director.loadScene(SCENE_NAME.End)
-    }
-
+  
     const audioSrc = this.node.getComponent(AudioSource);
     this.gameModel.AudioBackground = audioSrc;
 
+    this.spawnHouse();
     this.spawnWater();
     this.spawnWood();
     this.spawnFence();
@@ -68,14 +56,15 @@ export class GameController extends Component {
 
     //-------------------LOAD ALL POS OBSTACLE---------------------
     this.gameModel.FrogieController.getComponent(FrogieController).loadPos(
-      [].concat(this.spawnFence(), data.posTrees, data.posBush, data.posWall, data.posWater));
-  }
+      [].concat(this.spawnFence(), data.posTrees, this.spawnBush(), data.posWall, data.posWater, this.spawnHouse()));}
 
-  
   protected start(): void {
     director.resume();
 
     // set time
+    const level = GameConfig.level;
+    this.time = this.time + level * this.gameModel.TimeIncrement;
+
     setTimeout(() => {
       this.time = this.gameModel.TotalTime;
       this.updateTimeLabel();
@@ -86,53 +75,16 @@ export class GameController extends Component {
     }, 0);
 
     // spawn car
-    this.schedule(function () {
-      this.spawnCar();
-    }, math.randomRangeInt(2, 4));
+    this.schedule(function () { this.spawnCar();}, math.randomRangeInt(2, 4));
 
     // spawn pig
-    // setTimeout(function() {
-      this.schedule(function() {
-        this.spawnPig();
-      }, math.randomRangeInt(1, 3));
-    // }, 5000);
+      this.schedule(function() {this.spawnPig();}, math.randomRangeInt(1, 3));
 
-    var getVolumne = sys.localStorage.getItem("volume");
-
-    if (getVolumne) {
-      this.variableVolumeArray = JSON.parse(getVolumne);
-      localStorage.setItem("volume", JSON.stringify(this.variableVolumeArray));
-    } else {
-      this.onAudio();
-      this.iconShow.node.active = true;
-      this.iconOff.node.active = false;
-    }
-
-    this.convertVolume =
-      this.variableVolumeArray[this.variableVolumeArray.length - 1];
-
-    if (this.convertVolume === 1) {
-      this.iconShow.node.active = true;
-      this.iconOff.node.active = false;
-      // this.gameModel.AudioBackground.volume = 1;
-      this.onAudio();
-    } else if (this.convertVolume === 0) {
-      this.iconShow.node.active = false;
-      this.iconOff.node.active = true;
-      this.audioController.pauseAudio();
-      // this.gameModel.AudioBackground.volume = 0;
-    }
-
-    this.gameModel.FrogieNode =
-      this.gameModel.FrogieController.getComponent(FrogieController);
+    this.gameModel.FrogieNode = this.gameModel.FrogieController.getComponent(FrogieController);
     this.FrogieCollider = this.gameModel.FrogieNode.getComponent(Collider2D);
 
     if (this.FrogieCollider) {
-      this.FrogieCollider.on(
-        Contact2DType.BEGIN_CONTACT,
-        this.onBeginContact,
-        this
-      );
+      this.FrogieCollider.on(Contact2DType.BEGIN_CONTACT,this.onBeginContact,this);
       this.FrogieCollider.node.position = new Vec3(0, -400, 0);
       this.FrogieCollider.apply();
     }
@@ -140,39 +92,40 @@ export class GameController extends Component {
 
   protected update(dt: number): void {
     //-------------------CHECK TOUCH WATER OR NOT---------------------
-    if (
-      !this.isDie &&
-      this.gameModel.FrogieController.getComponent(FrogieController).getIsDie()
-    ) {
+    if (!this.isDie &&
+      this.gameModel.FrogieController.getComponent(FrogieController).getIsDie()) {
       this.isDie = true;
       this.gameModel.FrogieController.frogieFallWater();
+      this.gameModel.AudioFall.play();
       this.gameOver();
     }
 
     //-------------------CHECK TOUCH FINISH LINE OR NOT---------------------
-    if (
-      !this.touchFinishLine &&
-      this.gameModel.FrogieController.getComponent(
-        FrogieController
-      ).getFinishLine()
-    ) {
+    if (!this.touchFinishLine &&
+      this.gameModel.FrogieController.getComponent(FrogieController).getFinishLine()) {
       this.dataLevel[GameConfig.level] = 2;
-
-      this.dataLevel[GameConfig.level + 1] =
-        this.dataLevel[GameConfig.level + 1] === 0
-          ? 1
-          : this.dataLevel[GameConfig.level + 1];
-
+      (GameConfig.level < 4) && (this.dataLevel[GameConfig.level + 1] = this.dataLevel[GameConfig.level + 1] === 0? 1 : this.dataLevel[GameConfig.level + 1]);
       localStorage.setItem("data_level", JSON.stringify(this.dataLevel));
       this.touchFinishLine = true;
-      this.gameModel.Finish.showFinish();
+      this.gameModel.FinishNode.active = true;
       this.scheduleOnce(function () {
         director.pause();
-      }, 1);
+      }, 0.8);
     }
   }
 
   //-------------------SPAWN OBSTACLE-------------------
+
+  protected spawnHouse() {
+    const data = Data[GameConfig.level];
+    let _posHouse:  Array<{ x: number; y: number}> = new Array();
+    _posHouse= this.spawnObstacleVelHor(data.posHouse, -3, 3, -4, 4);
+
+    this.setPosWood(data.posHouse, this.gameModel.House, this.gameModel)
+    this.gameModel.FrogieController.getComponent(FrogieController).loadPos(_posHouse);
+    return _posHouse;
+  }
+
   protected spawnWater(): void {
     const data = Data[GameConfig.level];
     let _posWater: Array<{ x: number; y: number }> = new Array();
@@ -183,30 +136,19 @@ export class GameController extends Component {
 
       this.gameModel.ContainerObstacle.addChild(water);
       this.gameModel.ContainerTopWater.addChild(topWater);
-      water.setPosition(
-        new Vec3(data.posWater[i].x * step, data.posWater[i].y * step, 0)
-      );
-      topWater.setPosition(
-        new Vec3(
-          data.posWater[i].x * step + 10,
-          data.posWater[i].y * step + 80,
-          0
-        )
-      );
+      water.setPosition(new Vec3(data.posWater[i].x * step, data.posWater[i].y * step, 0));
+      topWater.setPosition(new Vec3(data.posWater[i].x * step + 10,data.posWater[i].y * step + 80,0));
     }
-    this.gameModel.FrogieController.getComponent(FrogieController).loadPosWater(
-      _posWater
-    );
+    this.gameModel.FrogieController.getComponent(FrogieController).loadPosWater(_posWater);
   }
+
   protected spawnWood(): void {
     const data = Data[GameConfig.level];
     let _posWood: Array<{ x: number; y: number }> = new Array();
     _posWood = this.spawnObstacleHor(data.posWood)
 
     this.setPosWood(data.posWood, this.gameModel.Wood, this.gameModel);
-    this.gameModel.FrogieController.getComponent(FrogieController).loadPosWood(
-      _posWood
-    );
+    this.gameModel.FrogieController.getComponent(FrogieController).loadPosWood(_posWood);
   }
 
   protected spawnFence() {
@@ -221,38 +163,26 @@ export class GameController extends Component {
 
   protected spawnTree(): void {
     const data = Data[GameConfig.level];
-
     for (let i = 0; i < data.posTrees.length; i++) {
       let tree = instantiate(this.gameModel.TreeNode);
       let leaf = instantiate(this.gameModel.ItemLeaf);
 
       this.gameModel.ContainerObstacle.addChild(tree);
       this.gameModel.ContainerLeaf.addChild(leaf);
-      tree.setPosition(
-        new Vec3(data.posTrees[i].x * step, data.posTrees[i].y * step + step, 0)
-      );
+      tree.setPosition(new Vec3(data.posTrees[i].x * step, data.posTrees[i].y * step + step, 0));
 
-      leaf.setPosition(
-        new Vec3(
-          data.posTrees[i].x * step + 10,
-          data.posTrees[i].y * step + 400,
-          0
-        )
-      );
+      leaf.setPosition(new Vec3(data.posTrees[i].x * step + 10, data.posTrees[i].y * step + 400,0));
       tree.setScale(new Vec3(0.5, 0.5));
     }
   }
 
   protected spawnFinishLine(): void {
     const data = Data[GameConfig.level];
-    console.log("dataFinish", data.posFinishLine)
     let _posFinishLine: Array<{ x: number; y: number }> = new Array();
     _posFinishLine = this.spawnObstacleVelHor(data.posFinishLine, -2, 2, 0, 1);
 
     this.setPosWood(data.posFinishLine, this.gameModel.FinishLine, this.gameModel)
-    this.gameModel.FrogieController.getComponent(
-      FrogieController
-    ).loadPosFinish(_posFinishLine);
+    this.gameModel.FrogieController.getComponent(FrogieController).loadPosFinish(_posFinishLine);
   }
 
   protected spawnRoad(): void {
@@ -265,72 +195,40 @@ export class GameController extends Component {
     this.setPosWood(data.posFloor, this.gameModel.Floor, this.gameModel);
   }
 
-  protected spawnBush(): void {
+  protected spawnBush() {
     const data = Data[GameConfig.level];
+    let _posBush: Array<{ x: number; y: number}> = new Array();
+    _posBush = this.spawnObstacleVelHor(data.posBush, -1 , 1, -1, 1);
     this.setPosWood(data.posBush, this.gameModel.BushNode, this.gameModel);
+    this.gameModel.FrogieController.getComponent(FrogieController).loadPos(_posBush);
+    return _posBush;
   }
   //-------------------COLLISION COLLIDER-------------------
-
   protected onBeginContact(
     selfCollider: Collider2D,
     otherCollider: Collider2D,
     contact: IPhysics2DContact | null
   ): void {
     // GAME OVER
-    if (
-      otherCollider.node.name.startsWith("Car") ||
+    if (otherCollider.node.name.startsWith("Car") ||
       otherCollider.node.name.startsWith("Pig")
     ) {
       this.gameModel.FrogieController.frogieCrash();
-      this.cameraController.shakingCamera();
       this.gameModel.AudioAccident.play();
+      this.cameraController.shakingCamera();
       this.scheduleOnce(function () {
         this.gameOver();
       }, 0.2);
     }
   }
-  //-------------------AUDIO-------------------
 
-  protected onAudio(): void {
-    this.variableVolume = 1;
-    this.variableVolumeArray.push(this.variableVolume);
-    sys.localStorage.setItem(
-      "volume",
-      JSON.stringify(this.variableVolumeArray)
-    );
-
-    this.iconShow.node.active = true;
-    this.iconOff.node.active = false;
-    this.audioController.playAudio();
-  }
-
-  protected offAudio(): void {
-    this.variableVolume = 0;
-    this.variableVolumeArray.push(this.variableVolume);
-    sys.localStorage.setItem(
-      "volume",
-      JSON.stringify(this.variableVolumeArray)
-    );
-
-    this.iconShow.node.active = false;
-    this.iconOff.node.active = true;
-    this.audioController.pauseAudio();
-  }
     //-------------------SPAWN CAR AND PIG---------------------
-
   protected spawnCar(): void {
     if (this.gameModel.CarsNode.children.length < 5) {
-      const randomCarIndex = randomRangeInt(
-        0,
-        this.gameModel.ListFrameCar.length
-      );
-      const carsNode = instantiate(this.gameModel.PrefabCar).getComponent(
-        CarPrefabController
-      );
-      carsNode.getComponent(Sprite).spriteFrame =
-        this.gameModel.ListFrameCar[randomCarIndex];
-      carsNode.getComponent(Animation).defaultClip =
-        this.gameModel.AnimationCars[randomCarIndex];
+      const randomCarIndex = randomRangeInt(0,this.gameModel.ListFrameCar.length);
+      const carsNode = instantiate(this.gameModel.PrefabCar).getComponent(CarPrefabController);
+      carsNode.getComponent(Sprite).spriteFrame = this.gameModel.ListFrameCar[randomCarIndex];
+      carsNode.getComponent(Animation).defaultClip = this.gameModel.AnimationCars[randomCarIndex];
       carsNode.Init(this.gameModel.CarsNode);
 
       carsNode.getComponent(Animation).play();
@@ -339,47 +237,30 @@ export class GameController extends Component {
   }
 
   protected spawnPig(): void {
-    if (this.gameModel.PigNode.children.length < 3) {
-      const pigNode = instantiate(this.gameModel.PrefabPig).getComponent(
-        PigPrefab
-      );
+    if (this.gameModel.PigNode.children.length < 5) {
+      const pigNode = instantiate(this.gameModel.PrefabPig).getComponent(PigPrefab);
       pigNode.Initt(this.gameModel.PigNode);
       pigNode.getComponent(Collider2D).apply();
     }
   }
 
   //------------------PAUSE---------------------
-
   protected onClickIconPause(): void {
-    
-    let opacityBtnOff = this.iconOff.getComponent(UIOpacity);
-    let opacityBtnOn = this.iconShow.getComponent(UIOpacity);
-    
     this.pause.IsPause = !this.pause.IsPause;
     if (this.pause.IsPause) {
       input.off(Input.EventType.KEY_DOWN);
-      // input.off(Input.EventType.KEY_DOWN);
-      // this.iconOff.interactable = false;
-      // this.iconShow.interactable = false;
-      // opacityBtnOff.opacity = 0;
-      // opacityBtnOn.opacity = 0;
-      // this.audioController.node.active = false;
+      this.iconOff.interactable = false;
+      this.iconShow.interactable = false;
       director.pause();
     } else {
       director.resume();
       this.gameModel.FrogieController.handleOnKeyDown();
-      // input.on(Input.EventType.KEY_DOWN,this.gameModel.FrogieController.onKeyDown,this)
-      // this.iconOff.interactable = true;
-      // this.iconShow.interactable = true;
-      // this.audioController.node.active = true;
-      // opacityBtnOff.opacity = 255;
-      // opacityBtnOn.opacity = 255;
+      this.iconOff.interactable = true;
+      this.iconShow.interactable = true;
     }
   }
-  
 
   // -----------------------------TIME----------------------------
-
   protected updateTime(): void {
     this.time--;
     if (this.time >= 0) {
@@ -398,16 +279,23 @@ export class GameController extends Component {
   protected updateLevelLable(): void {
     let textLevel = GameConfig.level+1;
     this.gameModel.LevelLabel.string = "Level:  " + textLevel;
+    this.updateTimeLabel()
   }
   // --------------------------game over src-------------------------
   protected gameOver(): void {
+    this.gameModel.CarsNode.active = false;
+    this.gameModel.PigNode.active = false;
+    this.pause.interactable = false;
+    this.iconOff.interactable = false;
+    this.iconShow.interactable = false;
     this.scheduleOnce(function () {
-      this.gameModel.GameOver.showGameOver();
+      this.gameModel.GameOver.active = true;
     }, 0.2);
     this.schedule(function () {
       director.pause();
-    }, 1);
+    }, 0.8);
   }
+
 
   protected spawnObstacleHor(dataPosWood, from = -1, to = 1) {
     const _posWood: Array<{ x: number; y: number }> = new Array();

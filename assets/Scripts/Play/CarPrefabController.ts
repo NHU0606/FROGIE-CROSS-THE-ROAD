@@ -2,13 +2,8 @@ import {
   _decorator,
   Component,
   Node,
-  math,
   Vec3,
   Collider2D,
-  SpriteFrame,
-  random,
-  Sprite,
-  Vec2,
 } from "cc";
 import { Data, GameConfig } from "../DataType";
 const { ccclass, property } = _decorator;
@@ -20,13 +15,11 @@ enum CarsDirection {
 
 @ccclass("CarPrefabController")
 export class CarPrefabController extends Component {
-  private carsSpeed: number = 200;
+  private carsSpeed: number = 250;
   private curDirection: CarsDirection = CarsDirection.Left;
-  private directionChangeDelay: number = 20;
+  private directionChangeDelay: number = 10;
   private directionChangeTime: number = 0;
-  private direct: number = -1;
   private laneY: number = 0;
-  private startPos: Vec2;
 
   protected start(): void {
     const data = Data[GameConfig.level];

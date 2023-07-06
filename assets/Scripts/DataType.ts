@@ -36,7 +36,7 @@ export const Data = [
       laneXLeft: -1150,
       laneXRight: 1150,
       laneYBot: 500,
-      laneYTop: 600,
+      laneYTop: 650,
     },
     posPig: {
       laneXLeft: -1300,
@@ -45,6 +45,7 @@ export const Data = [
       laneYTop: -1300,
     },
     posWood: [],
+    posHouse: [],
     posFinishLine: [{ x: 0, y: 26 }],
     posRoad: [{ x: 0, y: 10 }],
     posFloor: [
@@ -93,7 +94,7 @@ export const Data = [
       laneXLeft: -1150,
       laneXRight: 1300,
       laneYBot: 300,
-      laneYTop: 400,
+      laneYTop: 450,
     },
     posPig: {
       laneXLeft: -1300,
@@ -110,6 +111,7 @@ export const Data = [
       { x: -15, y: 17 },
       { x: 15, y: 18 },
     ],
+    posHouse: [],
     posFinishLine: [{ x: 0, y: 35 }],
     posRoad: [
       { x: -10, y: 6 },
@@ -170,8 +172,8 @@ export const Data = [
     posCar: {
       laneXLeft: -1300,
       laneXRight: 1300,
-      laneYBot: 850,
-      laneYTop: 1000,
+      laneYBot: 900,
+      laneYTop: 1050,
     },
     posPig: {
       laneXLeft: -1300,
@@ -192,6 +194,7 @@ export const Data = [
       { x: 20, y: 5 },
       { x: -20, y: 5 },
     ],
+    posHouse: [],
     posFinishLine: [{ x: 0, y: 35 }],
     posRoad: [
       { x: -10, y: 18 },
@@ -217,23 +220,28 @@ export const Data = [
       { x: 18, y: 26 },
       { x: -22, y: 27 },
       { x: -18, y: 28 },
-      { x: 18, y: -2 },
-      { x: 14, y: -1 },
+      { x: 18, y: -7 },
+      { x: 14, y: -2 },
       { x: -16, y: -4 },
-      { x: -20, y: -2 },
+      { x: 0, y: -2 },
       { x: -6, y: 2 },
-      { x: -20, y: 29 },
+      { x: -4, y: 29 },
       { x: 20, y: 29 },
       { x: 17, y: 30 },
       { x: 10, y: 7 },
+      { x: 10, y: 30 },
+      { x: 0, y: 23 },
+      { x: -6, y: 13 },
+      { x: -17, y: 33 },
+      { x: -15, y: 34 },
     ],
     posBush: [
-      { x: -15, y: -4 },
-      { x: 5, y: -2 },
-      { x: 10, y: 15 },
-      { x: -5, y: 23 },
-      { x: -17, y: 10 },
-      { x: 16, y: 24 },
+      { x: -6, y: -6 },
+      { x: 17, y: 11 },
+      { x: -8, y: 23 },
+      { x: -15, y: 10 },
+      { x: 13, y: 23 },
+      { x: 8, y: -7 },
     ],
     posFence: [
       { x: 10, y: 34 },
@@ -268,7 +276,7 @@ export const Data = [
       laneXLeft: -1300,
       laneXRight: 1300,
       laneYBot: 100,
-      laneYTop: 200,
+      laneYTop: 250,
     },
     posRoad: [
       { x: -10, y: 2 },
@@ -293,6 +301,7 @@ export const Data = [
       { x: 20, y: 15 },
       { x: -20, y: 15 },
     ],
+    posHouse: [],
     posFinishLine: [{ x: 0, y: 35 }],
     posWater: [
       { x: -20, y: 14 },
@@ -304,22 +313,30 @@ export const Data = [
     posTrees: [
       { x: 22, y: 30 },
       { x: 18, y: 26 },
-      { x: -22, y: 27 },
-      { x: -18, y: 28 },
-      { x: 18, y: -2 },
-      { x: 14, y: -1 },
+      { x: -19, y: 33},
+      { x: -3, y: 33 },
+      { x: 18, y: -4 },
+      { x: 14, y: -7 },
       { x: -16, y: -4 },
-      { x: -20, y: -2 },
-      { x: -6, y: 2 },
+      { x: -18, y: -7 },
+      { x: -6, y: 10 },
       { x: -20, y: 29 },
       { x: 20, y: 29 },
       { x: 17, y: 30 },
-      { x: 10, y: 7 },
+      { x: -6, y: -3 },
+      { x: 12, y: 12 },
+      { x: 6, y: -8 },
+      { x: 16, y: 18 },
+      { x: 18, y: 20 },
+      { x: 4, y: 33 },
+      { x: -5, y: 31 },
+      { x: -18, y: 19 },
+      { x: -17, y: 23 },
     ],
     posBush: [
-      { x: -15, y: -4 },
+      { x: 10, y: 19 },
       { x: 5, y: -2 },
-      { x: 10, y: 15 },
+      { x: -7, y: -7 },
       { x: -5, y: 23 },
       { x: -17, y: 10 },
       { x: 16, y: 24 },
@@ -334,13 +351,13 @@ export const Data = [
   {
     id: 5,
     posCamera: {
-      maxY: 1500,
+      maxY: 1700,
       minY: -170,
       maxX: 500,
       minX: -500,
     },
     posWall: {
-      maxY: 35,
+      maxY: 40,
       minY: -9,
       maxX: 19,
       minX: -19,
@@ -348,8 +365,8 @@ export const Data = [
     posCar: {
       laneXLeft: -1300,
       laneXRight: 1300,
-      laneYBot: 850,
-      laneYTop: 1000,
+      laneYBot: 900,
+      laneYTop: 1050,
     },
     posPig: {
       laneXLeft: -1300,
@@ -369,8 +386,17 @@ export const Data = [
       { x: 15, y: 4 },
       { x: 20, y: 5 },
       { x: -20, y: 5 },
+      { x: -7, y: 31 },
+      { x: -8, y: 32 },
+      { x: -8, y: 33 },
+      { x: -15, y: 33 },
+      { x: 5, y: 33 },
+      { x: 4, y: 32 },
+      { x: 3, y: 31 },
+      { x: 15, y: 32 },
     ],
-    posFinishLine: [{ x: 0, y: 35 }],
+    posHouse: [{ x: -10, y: 9 }],
+    posFinishLine: [{ x: 0, y: 38 }],
     posRoad: [
       { x: -10, y: 18 },
       { x: 10, y: 18 },
@@ -381,6 +407,11 @@ export const Data = [
       { x: 2, y: 4 },
       { x: 13, y: 4 },
       { x: 24, y: 4 },
+      { x: -20, y: 32 },
+      { x: -9, y: 32 },
+      { x: 2, y: 32 },
+      { x: 13, y: 32 },
+      { x: 24, y: 32 },
     ],
     posFloor: [
       { x: -16, y: 21 },
@@ -398,63 +429,40 @@ export const Data = [
       { x: 18, y: -2 },
       { x: 14, y: -1 },
       { x: -16, y: -4 },
-      { x: -20, y: -2 },
+      { x: -18, y: -2 },
       { x: -6, y: 2 },
       { x: -20, y: 29 },
       { x: 20, y: 29 },
       { x: 17, y: 30 },
       { x: 10, y: 7 },
+      { x: -8, y: -8 },
+      { x: -5, y: -4 },
+      { x: 16, y: -8 },
+      { x: -6, y: 13 },
+      { x: 17, y: 9 },
+      { x: -18, y: 35 },
+      { x: -7, y: 36 },
+      { x: 5, y: 37 },
     ],
     posBush: [
-      { x: -15, y: -4 },
+      { x: -12, y: -7 },
       { x: 5, y: -2 },
       { x: 10, y: 15 },
       { x: -5, y: 23 },
       { x: -17, y: 10 },
       { x: 16, y: 24 },
+      { x: 17, y: 35 },
+      { x: 15, y: 35 },
+      { x: -6, y: 31 },
+      { x: 6, y: 31 },
+      { x: -9, y: 31 },
+      { x: 9, y: 31 },
     ],
     posFence: [
-      { x: 10, y: 34 },
-      { x: -10, y: 34 },
-      { x: 20, y: 31 },
-      { x: -20, y: 31 },
-    ],
-  },
-  {
-    id: 6,
-    posCamera: {
-     
-    },
-    posWall: {
-      
-    },
-    posCar: {
-     
-    },
-    posPig: {
-     
-    },
-    posWood: [
-      
-    ],
-    posFinishLine: [],
-    posRoad: [
-     
-    ],
-    posWater: [
-     
-    ],
-    posFloor: [
-      
-    ],
-    posTrees: [
-      
-    ],
-    posBush: [
-      
-    ],
-    posFence: [
-      
+      { x: 10, y: 38 },
+      { x: -10, y: 38 },
+      { x: 18, y: 37 },
+      { x: -18, y: 37 },
     ],
   },
 ];

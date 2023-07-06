@@ -1,8 +1,5 @@
 import { _decorator, Component, Node, AnimationClip, SpriteFrame, Button, AudioSource, Sprite, Prefab, Collider2D, Label, CCInteger } from 'cc';
 import { FrogieController } from "./FrogieController";
-import { GameOverController } from "../End/GameOverController";
-import { FinishController } from '../End/FinishController';
-import { WinController } from '../End/WinController';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameModel')
@@ -42,6 +39,16 @@ export class GameModel extends Component {
     }
 
     // OBSTACLES
+    @property({type: Node})
+    private house: Node;
+
+    public get House() : Node {
+        return this.house;
+    }
+    
+    public set House(house : Node) {
+        this.house = house;
+    }
 
     @property({type: Node})
     private water: Node;
@@ -230,6 +237,17 @@ export class GameModel extends Component {
         this.itemLeaf = itemLeaf;
     }
 
+    @property({ type: SpriteFrame})
+    private flowerFrame: SpriteFrame[] = [] ;
+
+    public get FlowerFrame() : SpriteFrame[] {
+        return this.flowerFrame;
+    }
+    
+    public set FlowerFrame(flowerFrame : SpriteFrame[]) {
+        this.flowerFrame = flowerFrame;
+    }
+
     // -----
     @property({ type: Node })
     private containerTopWater: Node;
@@ -252,38 +270,29 @@ export class GameModel extends Component {
     public set ItemTopWater(itemTopWater : Node) {
         this.itemTopWater = itemTopWater;
     }
+
     // FINISH + RESULT + WIN NODE 
-    @property({ type: FinishController })
-    private FinishController: FinishController;
+    
+    @property({ type: Node })
+    private finishNode: Node;
 
-    public get Finish() : FinishController {
-        return this.FinishController;
+    public get FinishNode() : Node {
+        return this.finishNode;
     }
     
-    public set Finish(FinishController : FinishController) {
-        this.FinishController = FinishController;
+    public set FinishNode(FinishController : Node) {
+        this.finishNode = FinishController;
     } 
+   
+    @property({ type: Node })
+    private gameOver: Node;    
 
-    @property({type: WinController})
-    private win: WinController;
-
-    public get Win() : WinController {
-        return this.win;
-    }
-    
-    public set Win(WinController : WinController) {
-        this.win = WinController;
-    } 
-
-    @property({ type: GameOverController })
-    private gameOver: GameOverController;    
-
-    public get GameOver() : GameOverController {
+    public get GameOver() : Node {
         return this.gameOver;
     }
     
-    public set GameOver(GameOverController : GameOverController) {
-        this.gameOver = GameOverController;
+    public set GameOver(gameOver : Node) {
+        this.gameOver = gameOver;
     } 
        
     // BTN AUDIO 
@@ -391,7 +400,7 @@ export class GameModel extends Component {
     }
 
     @property({type: CCInteger})
-    private totalTime: number = 30;
+    private totalTime: number;
 
     public get TotalTime() : number {
         return this.totalTime;
@@ -399,6 +408,17 @@ export class GameModel extends Component {
     
     public set TotalTime(totalTime : number) {
         this.totalTime = totalTime;
+    }
+
+    @property({type: CCInteger})
+    private timeIncrement: number;
+
+    public get TimeIncrement():number {
+        return this.timeIncrement;
+    }
+
+    public set TimeIncrement(timeIncrement: number) {
+        this.timeIncrement = timeIncrement;
     }
 
     @property({type: Label})
