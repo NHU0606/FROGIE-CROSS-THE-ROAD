@@ -224,7 +224,7 @@ export class GameController extends Component {
 
     //-------------------SPAWN CAR AND PIG---------------------
   protected spawnCar(): void {
-    if (this.gameModel.CarsNode.children.length < 5) {
+    if (this.gameModel.CarsNode.children.length < 8) {
       const randomCarIndex = randomRangeInt(0,this.gameModel.ListFrameCar.length);
       const carsNode = instantiate(this.gameModel.PrefabCar).getComponent(CarPrefabController);
       carsNode.getComponent(Sprite).spriteFrame = this.gameModel.ListFrameCar[randomCarIndex];
@@ -237,7 +237,7 @@ export class GameController extends Component {
   }
 
   protected spawnPig(): void {
-    if (this.gameModel.PigNode.children.length < 5) {
+    if (this.gameModel.PigNode.children.length < 8) {
       const pigNode = instantiate(this.gameModel.PrefabPig).getComponent(PigPrefab);
       pigNode.Initt(this.gameModel.PigNode);
       pigNode.getComponent(Collider2D).apply();

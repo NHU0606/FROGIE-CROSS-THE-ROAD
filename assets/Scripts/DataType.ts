@@ -1,5 +1,7 @@
 import { Vec2 } from "cc";
 
+export const step = 50;
+
 export class GameConfig {
   static level: number = 0;
 }
@@ -467,4 +469,3 @@ export const Data = [
   },
 ];
 
-export const step = 50;
