@@ -5,7 +5,7 @@ const { ccclass, property } = _decorator;
 export class PauseController extends Component {
     private isIconPause: boolean = false;
     private isPause: boolean = false;
-  interactable: boolean;
+    public interactable: boolean;
 
     public get IsPause() : boolean {
         return this.isPause;

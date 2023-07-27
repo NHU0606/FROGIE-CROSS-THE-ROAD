@@ -2,11 +2,8 @@ import {
   _decorator,
   Component,
   director,
-  input,
   Node,
-  Tween,
   Vec3,
-  Input,
 } from "cc";
 import { GameConfig, SCENE_NAME } from "./DataType";
 const { ccclass, property } = _decorator;

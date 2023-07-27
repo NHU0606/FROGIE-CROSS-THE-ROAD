@@ -1,6 +1,6 @@
 import { SCENE_NAME} from '../DataType';
 import { _decorator, Component, Node, director } from 'cc';
-const { ccclass, property } = _decorator;
+const { ccclass } = _decorator;
 
 @ccclass('HelpController')
 export class HelpController extends Component {

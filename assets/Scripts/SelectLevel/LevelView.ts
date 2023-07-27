@@ -41,18 +41,13 @@ export class LevelView extends Component {
       level.setPosition(new Vec3(startPos, level.position.y,0));
       startPos += 120;
 
-      level.getComponent(Sprite).spriteFrame =
-        this.listFrameLevel[this.dataLevel[i]];
+      level.getComponent(Sprite).spriteFrame = this.listFrameLevel[this.dataLevel[i]];
 
       level.on(Button.EventType.CLICK, () => {
         GameConfig.level = i;
         this.dataLevel[i] > 0 && director.loadScene(SCENE_NAME.Play);
       });
     }
-  }
-
-  protected start(): void {
-    
   }
 
   protected onClickReturn(): void {

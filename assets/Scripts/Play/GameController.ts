@@ -3,10 +3,10 @@ import { FrogieController } from "./FrogieController";
 import { GameModel } from "./GameModel";
 import { CameraController } from "./CameraController";
 import { PauseController } from "./PauseController";
-import { Data, Stage, step, SCENE_NAME } from "../DataType";
+import { Data, step } from "../DataType";
 import { JoyStickController } from "./JoyStickController";
 import { GameConfig } from "../DataType";
-import {_decorator,Collider2D, Component,Contact2DType, Vec3,instantiate, randomRangeInt, IPhysics2DContact, math, sys, UIOpacity, Button, AudioSource, director, Sprite, Animation, EventKeyboard, Input, input} from "cc";
+import {_decorator, Collider2D, Component, Contact2DType, Vec3,instantiate, randomRangeInt, IPhysics2DContact, math, Button, AudioSource, director, Sprite, Animation, EventKeyboard, Input, input} from "cc";
 import { PigPrefab } from "./PigPrefab";
 const { ccclass, property } = _decorator;
 

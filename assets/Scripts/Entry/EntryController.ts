@@ -1,6 +1,6 @@
-import { _decorator, AudioSource, Button, Component, director, Node, sys } from 'cc';
-import { GameConfig, SCENE_NAME} from '../DataType';
-const { ccclass, property } = _decorator;
+import { _decorator,  Component, director } from 'cc';
+import { SCENE_NAME} from '../DataType';
+const { ccclass } = _decorator;
 
 @ccclass('EntryController')
 export class EntryController extends Component {

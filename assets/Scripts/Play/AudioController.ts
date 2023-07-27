@@ -67,9 +67,7 @@ export class AudioController extends Component {
           this.iconToShow.node.active = false;
           this.iconToHide.node.active = true;
           this.audioBackground.volume = 0;
-
         }
-    
     }
 
     protected onLoad(): void {
@@ -77,7 +75,7 @@ export class AudioController extends Component {
         this.iconToHide.node.active = true;
     }
 
-    onClickIcon () {
+    private onClickIcon () {
         this.isMuted = !this.isMuted;
         if (this.isMuted) {
             this.audioBackground.volume = 0;
@@ -86,17 +84,17 @@ export class AudioController extends Component {
         }               
     }  
 
-    onToggleButtonClicked() {
+    private onToggleButtonClicked() {
         this.isiconToShown = !this.isiconToShown;
         this.updateIconsVisibility();
     }
 
-    updateIconsVisibility() {
+    private updateIconsVisibility() {
         this.iconToShow.node.active = this.isiconToShown;
         this.iconToHide.node.active = !this.isiconToShown;
     }
 
-    protected onAudio(): void {
+    private onAudio(): void {
         this.variableVolume = 1;
         this.variableVolumeArray.push(this.variableVolume);
         sys.localStorage.setItem("volume",JSON.stringify(this.variableVolumeArray));
@@ -106,14 +104,14 @@ export class AudioController extends Component {
         this.audioBackground.volume = 1;
       }
     
-    protected offAudio(): void {
+    private offAudio(): void {
         this.variableVolume = 0;
         this.variableVolumeArray.push(this.variableVolume);
         sys.localStorage.setItem("volume",JSON.stringify(this.variableVolumeArray));
-    
+
         this.iconToShow.node.active = false;
         this.iconToHide.node.active = true;
         this.audioBackground.volume = 1;
         this.audioBackground.volume = 0;
-      }
+    }
 }

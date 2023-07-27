@@ -8,14 +8,9 @@ export class CameraController extends Component {
     @property({type: FrogieController})
     private frogieController: FrogieController;
 
-    private anim: Animation | null = null;
-    camera: any;
+    private camera: any;
 
-    protected start(): void {
-        this.anim = this.node.getComponent(Animation)
-    }
-
-    update(deltaTime: number) {
+    protected update(deltaTime: number): void {
         const data = Data[GameConfig.level];
         let targerPos = this.frogieController.node.getPosition();
         targerPos.y = misc.clampf(targerPos.y, data.posCamera.minY, data.posCamera.maxY);
@@ -26,7 +21,7 @@ export class CameraController extends Component {
         this.node.setPosition(curPos);
     }
 
-    shakingCamera() {
+    public shakingCamera() {
         const frogiePosition = this.frogieController.node.getPosition();
         this.node.setPosition(frogiePosition);
 

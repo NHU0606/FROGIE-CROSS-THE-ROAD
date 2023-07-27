@@ -41,8 +41,7 @@ export class CarPrefabController extends Component {
     const movement = new Vec3(0, 0, 0);
     const data = Data[GameConfig.level];
 
-    this.curDirection =
-      this.laneY === data.posCar.laneYBot ? CarsDirection.Right : CarsDirection.Left;
+    this.curDirection =  this.laneY === data.posCar.laneYBot ? CarsDirection.Right : CarsDirection.Left;
 
     if (this.curDirection == CarsDirection.Left) {
       movement.x -= this.carsSpeed * dt;
@@ -78,8 +77,7 @@ export class CarPrefabController extends Component {
 
     this.laneY = this.laneY === data.posCar.laneYBot ? data.posCar.laneYTop : data.posCar.laneYBot;
 
-    let pos =
-      this.laneY === data.posCar.laneYBot
+    let pos = this.laneY === data.posCar.laneYBot
         ? new Vec3(data.posCar.laneXLeft, this.laneY, 0)
         : new Vec3(data.posCar.laneXRight, this.laneY, 0);
 

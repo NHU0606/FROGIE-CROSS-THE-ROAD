@@ -41,13 +41,7 @@ export class FrogieController extends Component {
     );
   }
 
-  protected update(dt: number): void {
-		var offset = this.speed*dt;
-		// this.node.setPosition(this.node.position.add(v3(this.axis.x*offset, this.axis.y*offset, 0.0)));
-	}
-
   public OnMove(event: Event, customEventData: Vec2) {
-    
     this.axis = customEventData;
     const { x, y } = this.pos;
     const data = Data[GameConfig.level];
@@ -127,14 +121,14 @@ export class FrogieController extends Component {
     }
   }
 
-  frogieCrash() {
+  public frogieCrash() {
     this.anim.play("Crash");
     this.schedule(function () {
       this.node.active = false;
     }, 0.2);
   }
 
-  frogieFallWater() {
+  public frogieFallWater() {
     this.anim.play("FallWater");
   }
 
