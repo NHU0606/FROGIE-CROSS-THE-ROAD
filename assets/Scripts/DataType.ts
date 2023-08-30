@@ -1,5 +1,3 @@
-import { Vec2 } from "cc";
-
 export const step = 50;
 
 export class GameConfig {
@@ -7,6 +5,7 @@ export class GameConfig {
 }
 
 GameConfig.level = 0;
+export let Stage = [1, 0, 0, 0, 0];
 
 export const SCENE_NAME = {
   Play: "Play",
@@ -16,7 +15,6 @@ export const SCENE_NAME = {
   End: "End"
 };
 
-export let Stage = [1, 0, 0, 0, 0];
 
 export const Data = [
   {

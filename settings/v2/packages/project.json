@@ -10,5 +10,11 @@
       "name": "mm",
       "value": 524288
     }
-  ]
+  ],
+  "general": {
+    "designResolution": {
+      "height": 600,
+      "fitHeight": true
+    }
+  }
 }

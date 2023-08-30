@@ -203,6 +203,7 @@ export class GameController extends Component {
     this.gameModel.FrogieController.getComponent(FrogieController).loadPos(_posBush);
     return _posBush;
   }
+  
   //-------------------COLLISION COLLIDER-------------------
   protected onBeginContact(
     selfCollider: Collider2D,
@@ -328,3 +329,4 @@ export class GameController extends Component {
     }
   }
 }
+  

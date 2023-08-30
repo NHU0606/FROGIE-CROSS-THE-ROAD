@@ -27,7 +27,6 @@ export class PreLoad extends Component {
         this.loadingBar.width = widthPercentage;
 
         if (progress >= 1) this.loadSceneEntry();
-        
     }
 }
 

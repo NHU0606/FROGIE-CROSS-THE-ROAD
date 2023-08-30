@@ -39,9 +39,9 @@ export class AudioController extends Component {
         this.iconToHide = iconToHide;
     } 
 
-        private variableVolume: number;
-        private variableVolumeArray: number[] = [];
-        private convertVolume: number;
+    private variableVolume: number;
+    private variableVolumeArray: number[] = [];
+    private convertVolume: number;
         
     protected start(): void {
         this.iconToShow.node.active = true;

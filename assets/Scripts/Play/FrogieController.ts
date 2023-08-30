@@ -157,7 +157,6 @@ export class FrogieController extends Component {
   }
 
   public setCheck(): void {
-    console.log(this.pos)
     const { x, y } = this.pos;
 
     //-------------------CHECK TOUCH WATER OR NOT---------------------
