@@ -312,11 +312,6 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "axis": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
-    },
     "_id": "a3+cNMIfRHa6/zx58obRDX"
   },
   {

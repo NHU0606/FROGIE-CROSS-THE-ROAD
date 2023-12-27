@@ -26,7 +26,6 @@ export class PigPrefab extends Component {
       }
   }
 
-
   public Initt(parent: Node): void {
       parent.addChild(this.node);
   }

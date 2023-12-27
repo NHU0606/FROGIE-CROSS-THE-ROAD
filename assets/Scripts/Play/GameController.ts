@@ -75,10 +75,10 @@ export class GameController extends Component {
     }, 0);
 
     // spawn car
-    this.schedule(function () { this.spawnCar();}, math.randomRangeInt(2, 4));
+    this.schedule(() => { this.spawnCar();}, math.randomRangeInt(2, 4));
 
     // spawn pig
-      this.schedule(function() {this.spawnPig();}, math.randomRangeInt(1, 3));
+    this.schedule(() => {this.spawnPig();}, math.randomRangeInt(1, 3));
 
     this.gameModel.FrogieNode = this.gameModel.FrogieController.getComponent(FrogieController);
     this.FrogieCollider = this.gameModel.FrogieNode.getComponent(Collider2D);

@@ -21,53 +21,23 @@ export class FrogieController extends Component {
   };
 
   private pos: { x: number; y: number } = { x: 0, y: -8 };
-  @property({type: CCFloat})
-
 	private axis: Vec2 = new Vec2();
  
   protected start(): void {
     this.anim = this.node.getComponent(Animation);
   }
-
+  
+  protected onLoad(): void {
+    input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
+    
+    this.node.setPosition(
+      new Vec3(this.pos.x * this.speed, this.pos.y * this.speed, 0)
+      );
+    }
+    
   public handleOnKeyDown(): void {
     input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
   }
-
-  protected onLoad(): void {
-    input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
-
-    this.node.setPosition(
-      new Vec3(this.pos.x * this.speed, this.pos.y * this.speed, 0)
-    );
-  }
-
-  public OnMove(event: Event, customEventData: Vec2) {
-    this.axis = customEventData;
-    const { x, y } = this.pos;
-    const data = Data[GameConfig.level];
-    
-    let newPosition: Vec3 = new Vec3(x * this.speed, y * this.speed, 0);
-
-    if (this.axis.x !== 0) {
-        const newX = x + Math.sign(this.axis.x);
-        if (this.pos.x >= data.posWall.minX && this.pos.x <= data.posWall.maxX) {
-            newPosition.x = newX * this.speed;
-            this.pos.x = newX;
-            this.anim.play("LeftMove");
-        }
-    } else if (this.axis.y !== 0) {
-        const newY = y + Math.sign(this.axis.y);
-        if (this.pos.y >= data.posWall.minY && this.pos.y <= data.posWall.maxY) {
-            newPosition.y = newY * this.speed;
-            this.pos.y = newY;
-            this.anim.play("Move");
-        }
-    }
-    tween(this.node)
-        .to(0.48, { position: newPosition })
-        .start();
-    this.setCheck();
-}
 
   public onKeyDown(event: EventKeyboard): void {
     const data = Data[GameConfig.level];
